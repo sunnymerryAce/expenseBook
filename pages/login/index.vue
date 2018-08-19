@@ -1,8 +1,8 @@
 <template lang="pug">
   .login
-    h1 メールアドレス
-    input(type='text') 
-    button(@click='login') ログイン
+    .loading(v-show='!isLoaded') Loading...
+    .login__content(v-show='isLoaded')
+      button.waves-effect.waves-light.btn.light-blue(@click='login') Googleアカウントでログイン
 </template>
 
 <script>
@@ -15,13 +15,18 @@ export default {
   name: 'Login',
   components: {},
   data() {
-    return {};
+    return {
+      /**
+       * ロード中かどうか
+       */
+      isLoaded: false
+    };
   },
+  computed: {},
   created: function() {
     this.checkLoginState();
   },
   mounted: function() {},
-  computed: {},
   methods: {
     /**
      * ログインボタン押下時の処理
@@ -46,12 +51,16 @@ export default {
       firebase.auth().onAuthStateChanged((user) => {
         // ログイン済みの場合
         if (user) {
+          console.log('logged in');
           // ユーザ情報を格納
           this.$store.commit('setUserId', {
             userId: user
           });
           // トップ画面に遷移
           this.$router.push('/');
+        } else {
+          // ログイン画面を表示
+          this.isLoaded = true;
         }
       });
     }
