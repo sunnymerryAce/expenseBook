@@ -1,4 +1,5 @@
 import Vuex from 'vuex';
+import firebase from '@/plugins/firebase';
 
 const store = () =>
   new Vuex.Store({
@@ -24,8 +25,8 @@ const store = () =>
       setUserId(state, args) {
         state.userId = args.userId;
       },
-      setDb(state, db) {
-        state.db = db;
+      setDb(state, database) {
+        state.db = database;
       },
       setList(state, list) {
         state.list = list;
@@ -41,6 +42,21 @@ const store = () =>
        */
       isAuthenticated(state) {
         return state.userId;
+      }
+    },
+    actions: {
+      getDatabase({ commit }) {
+        // DBからデータを取得
+        const db = firebase.database();
+        commit('setDb', db);
+        // カテゴリ更新時のイベント設定
+        db.ref(`/category`).on('value', (snapshot) => {
+          commit('setCategoryList', snapshot.val());
+        });
+        // exprenseBookアイテム更新時のイベント設定
+        db.ref(`/expensebook`).on('value', (snapshot) => {
+          commit('setList', snapshot.val());
+        });
       }
     }
   });
