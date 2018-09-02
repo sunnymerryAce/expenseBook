@@ -1,6 +1,6 @@
 <template lang="pug">
   tr.list-item.modal-trigger(@click='editItem')
-    td {{item.registerDate}}
+    td {{registerDate}}
     td {{item.title}}
     td {{getName(item.category)}}
     td {{item.amount}}
@@ -24,12 +24,15 @@ export default {
     id: ''
   },
   data() {
-    return {
-      /**
-       * 登録アイテム
-       */
-      list: this.$store.state.list
-    };
+    return {};
+  },
+  computed: {
+    /**
+     * 登録日
+     */
+    registerDate() {
+      return `${this.item.year}/${this.item.month}/${this.item.date}`;
+    }
   },
   created() {},
   methods: {
@@ -39,7 +42,9 @@ export default {
     editItem() {
       EventBus.$emit('editItem', {
         id: this.id,
-        registerDate: this.item.registerDate,
+        year: this.item.year,
+        month: this.item.month,
+        date: this.item.date,
         title: this.item.title,
         category: this.item.category,
         amount: this.item.amount

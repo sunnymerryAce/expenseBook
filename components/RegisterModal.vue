@@ -19,8 +19,8 @@
         .fix(v-if='isFixing')
           button.button.waves-effect.waves-light.btn.light-blue.modal-close(
             :class="{disabled: !requiredInfoFilled}",
-            @click='edit') EDIT
-          button.button.waves-effect.waves-light.btn.red.darken-4.modal-close(@click='register') DELETE
+            @click='editItem') EDIT
+          button.button.waves-effect.waves-light.btn.red.darken-4.modal-close(@click='deleteItem') DELETE
 </template>
 
 <script>
@@ -80,31 +80,18 @@ export default {
   created() {
     EventBus.$on('editItem', (params) => {
       this.id = params.id;
-      this.date = params.registerDate;
+      this.date = new Date(params.year, params.month - 1, params.date);
+      this.initializeCalendar();
       this.title = params.title;
       this.category = params.category;
       this.amount = params.amount;
       this.materializeModal[0].open();
-      console.log(this.id);
+      console.log(this.date);
     });
   },
   mounted() {
+    this.initializeCalendar();
     // Materialize.css のモジュール有効化
-    this.materializeDatePicker = M.Datepicker.init(
-      document.querySelectorAll('.datepicker'),
-      {
-        autoClose: true,
-        defaultDate: new Date(),
-        setDefaultDate: true,
-        container: document.querySelector('.top'),
-        showDaysInNextAndPreviousMonths: true,
-        format: 'yyyy/mm/dd',
-        onSelect: (date) => {
-          this.date = date;
-        }
-      }
-    );
-    this.date = this.materializeDatePicker[0].date;
     this.materializeModal = M.Modal.init(document.querySelectorAll('.modal'));
     var instances3 = M.FormSelect.init(document.querySelectorAll('select'));
   },
@@ -119,6 +106,27 @@ export default {
   },
   methods: {
     /**
+     * カレンダーを初期化する
+     */
+    initializeCalendar() {
+      // Materialize.css のモジュール有効化
+      this.materializeDatePicker = M.Datepicker.init(
+        document.querySelectorAll('.datepicker'),
+        {
+          autoClose: true,
+          defaultDate: this.date ? this.date : new Date(),
+          setDefaultDate: true,
+          container: document.querySelector('.top'),
+          showDaysInNextAndPreviousMonths: true,
+          format: 'yyyy/mm/dd',
+          onSelect: (date) => {
+            this.date = date;
+          }
+        }
+      );
+      this.date = this.materializeDatePicker[0].date;
+    },
+    /**
      * 登録ボタン押下時の処理
      */
     register() {
@@ -129,7 +137,9 @@ export default {
 
         const path = this.$store.state.db.ref(`/expensebook/${Date.now()}`);
         const item = {
-          registerDate: `${year}/${month}/${date}`,
+          year,
+          month,
+          date,
           title: this.title,
           category: this.category,
           amount: parseInt(this.amount, 10)
@@ -142,24 +152,34 @@ export default {
     /**
      * 編集ボタン押下時の処理
      */
-    edit() {
+    editItem() {
       if (this.requiredInfoFilled) {
-        // const year = this.date.getFullYear();
-        // const month = this.date.getMonth() + 1;
-        // const date = this.date.getDate();
+        console.log(this.category);
+
+        const year = this.date.getFullYear();
+        const month = this.date.getMonth() + 1;
+        const date = this.date.getDate();
 
         const path = this.$store.state.db.ref(`/expensebook/${this.id}`);
         const item = {
-          // registerDate: `${year}/${month}/${date}`,
+          year,
+          month,
+          date,
           title: this.title,
           category: this.category,
           amount: parseInt(this.amount, 10)
         };
-        console.log(path);
         path.set(item);
       } else {
         return;
       }
+    },
+    /**
+     * 削除ボタン押下時の処理
+     */
+    deleteItem() {
+      const path = this.$store.state.db.ref(`/expensebook/${this.id}`);
+      path.set(null);
     }
   }
 };

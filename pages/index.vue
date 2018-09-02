@@ -5,8 +5,7 @@
     keep-alive
       ListChart(name='chart')
     button.waves-effect.waves-light.btn(@click='logout') Logout
-    a.add-button.btn-floating.btn-large.waves-effect.waves-light.light-blue.modal-trigger(data-target="registerModal")
-      i.material-icons add
+    RegisterButton
 </template>
 
 <script>
@@ -16,13 +15,15 @@ import Chart from 'chart.js';
 import Navigation from '~/components/Navigation.vue';
 import ListChart from '~/components/ListChart.vue';
 import RegisterModal from '~/components/RegisterModal.vue';
+import RegisterButton from '~/components/RegisterButton.vue';
 
 export default {
   name: 'Index',
   components: {
     Navigation,
     ListChart,
-    RegisterModal
+    RegisterModal,
+    RegisterButton
   },
   data() {
     return {
@@ -34,13 +35,11 @@ export default {
   },
   created: function() {
     // DBからデータを取得
-    this.$store.commit('setDb', firebase.database());
-    // カテゴリの設定
-    const categoryPath = this.$store.state.db.ref(`/category`);
-    categoryPath.once('value', (snapshot) => {
-      this.$store.commit('setCategoryList', snapshot.val());
-    });
+    if (!this.$store.state.db) {
+      this.$store.dispatch('getDatabase');
+    }
   },
+  monuted() {},
   methods: {
     /**
      * ログアウトボタン押下時の処理
@@ -74,11 +73,6 @@ export default {
 }
 .top__link {
   display: block;
-}
-.add-button {
-  position: fixed;
-  bottom: 5vw;
-  right: 5vw;
 }
 </style>
 

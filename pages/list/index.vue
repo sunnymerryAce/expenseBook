@@ -12,6 +12,7 @@
             th Amount
         tbody
           ListItem(v-for='item, key in list', :item='item', :id='key', index='index')
+    RegisterButton
 </template>
 
 <script>
@@ -20,6 +21,7 @@ import Chart from 'chart.js';
 import Navigation from '~/components/Navigation.vue';
 import ListItem from '~/components/ListItem.vue';
 import RegisterModal from '~/components/RegisterModal.vue';
+import RegisterButton from '~/components/RegisterButton.vue';
 
 import { getCategoryName } from '~/assets/js/common.js';
 
@@ -28,16 +30,18 @@ export default {
   components: {
     Navigation,
     ListItem,
-    RegisterModal
+    RegisterModal,
+    RegisterButton
   },
   data() {
-    return {
-      /**
-       * 登録アイテム
-       */
-      list: this.$store.state.list
-    };
+    return {};
   },
+  computed: {
+    list() {
+      return this.$store.state.list;
+    }
+  },
+  updated() {},
   methods: {
     getName(category) {
       return getCategoryName(category);

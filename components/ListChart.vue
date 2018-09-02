@@ -48,58 +48,79 @@ export default {
       isLoaded: false
     };
   },
-  created() {
-    this.db = firebase.database();
-  },
+  created() {},
   mounted() {
-    // DBからデータを取得
-    this.db = firebase.database();
-    // カテゴリの設定
-    const categoryPath = this.db.ref(`/category`);
-    categoryPath.on('value', (snapshot) => {
-      this.categoryList = snapshot.val();
-    });
-    const path = this.db.ref(`/expensebook`);
-    path.on('value', (snapshot) => {
-      this.$store.commit('setList', snapshot.val());
-      // 各ジャンルの合計金額を計算
-      for (let key of Object.keys(this.$store.state.list)) {
-        switch (this.$store.state.list[key].category) {
-          case 0:
-            this.foodAmount += this.$store.state.list[key].amount;
-            break;
-          case 1:
-            this.miscellaneousAmount += this.$store.state.list[key].amount;
-            break;
-          case 2:
-            this.playAmount += this.$store.state.list[key].amount;
-            break;
-          case 3:
-            this.bookAmount += this.$store.state.list[key].amount;
-            break;
-          case 4:
-            this.transportAmount += this.$store.state.list[key].amount;
-            break;
-          case 5:
-            this.fixedAmount += this.$store.state.list[key].amount;
-            break;
-          case 6:
-            this.emergentAmount += this.$store.state.list[key].amount;
-            break;
-          case 7:
-            this.disposableAmount += this.$store.state.list[key].amount;
-            break;
-          default:
-            break;
-        }
-      }
+    // // DBからデータを取得
+    // this.db = firebase.database();
+    // // カテゴリの設定
+    // const categoryPath = this.db.ref(`/category`);
+    // categoryPath.on('value', (snapshot) => {
+    //   this.categoryList = snapshot.val();
+    // });
+    // const path = this.db.ref(`/expensebook`);
+    // path.on('value', (snapshot) => {
+    //   console.log('db changed');
+
+    //   this.$store.commit('setList', snapshot.val());
+    this.calcCategoryAmount();
+    this.drawChart();
+    this.isLoaded = true;
+    // });
+  },
+  computed: {
+    list() {
+      return this.$store.state.list;
+    }
+  },
+  watch: {
+    list: function() {
+      console.log('watching');
+      this.calcCategoryAmount();
       this.drawChart();
-      this.isLoaded = true;
-    });
+    }
   },
   methods: {
     /**
-     * グラグを描画する
+     * 各カテゴリーの合計金額を計算する
+     */
+    calcCategoryAmount() {
+      // 各ジャンルの合計金額を計算
+      if (this.$store.state.list) {
+        for (let key of Object.keys(this.$store.state.list)) {
+          switch (this.$store.state.list[key].category) {
+            case 0:
+              this.foodAmount += this.$store.state.list[key].amount;
+              break;
+            case 1:
+              this.miscellaneousAmount += this.$store.state.list[key].amount;
+              break;
+            case 2:
+              this.playAmount += this.$store.state.list[key].amount;
+              break;
+            case 3:
+              this.bookAmount += this.$store.state.list[key].amount;
+              break;
+            case 4:
+              this.transportAmount += this.$store.state.list[key].amount;
+              break;
+            case 5:
+              this.fixedAmount += this.$store.state.list[key].amount;
+              break;
+            case 6:
+              this.emergentAmount += this.$store.state.list[key].amount;
+              break;
+            case 7:
+              this.disposableAmount += this.$store.state.list[key].amount;
+              break;
+            default:
+              break;
+          }
+        }
+      }
+    },
+
+    /**
+     * グラフを描画する
      */
     drawChart() {
       // グラフの描画
@@ -107,7 +128,7 @@ export default {
       const myChart = new Chart(ctx, {
         type: 'horizontalBar',
         data: {
-          labels: this.categoryList,
+          labels: this.$store.state.categoryList,
           datasets: [
             {
               label: '# of Votes',
