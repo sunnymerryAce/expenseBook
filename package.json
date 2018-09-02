@@ -10,7 +10,8 @@
     "start": "nuxt start",
     "generate": "nuxt generate",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
-    "precommit": "npm run lint"
+    "precommit": "npm run lint",
+    "firebase_deploy": "firebase deploy"
   },
   "dependencies": {
     "@nuxtjs/pwa": "^2.0.8",
@@ -18,7 +19,8 @@
     "firebase": "^5.3.0",
     "jquery": "^3.3.1",
     "materialize-css": "^1.0.0-rc.2",
-    "nuxt": "^1.0.0"
+    "nuxt": "^1.0.0",
+    "vue-touch": "^2.0.0-beta.4"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.1",

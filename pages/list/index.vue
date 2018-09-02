@@ -1,97 +1,53 @@
 <template lang="pug">
-  .list
-    .loading(v-show='!isLoaded') Loading...
-    .list__content(v-show='isLoaded')
-      .list__chart
-        canvas(id="myChart" width="400" height="400")
-      table.highlight
+  section.list
+    Navigation
+    RegisterModal
+    .list__content
+      table.highlight.striped.centered
         thead
           tr
+            th Date
             th Title
-            th Genre
+            th Category
             th Amount
         tbody
-          tr(v-for='item in list')
-            td {{item.title}}
-            td {{item.genre}}
-            td {{item.amount}}
-      router-link(to='/') 登録画面へ
-
-    
+          ListItem(v-for='item, key in list', :item='item', :id='key', index='index')
 </template>
 
 <script>
 import firebase from '@/plugins/firebase';
 import Chart from 'chart.js';
+import Navigation from '~/components/Navigation.vue';
+import ListItem from '~/components/ListItem.vue';
+import RegisterModal from '~/components/RegisterModal.vue';
+
+import { getCategoryName } from '~/assets/js/common.js';
 
 export default {
   name: 'List',
-  components: {},
+  components: {
+    Navigation,
+    ListItem,
+    RegisterModal
+  },
   data() {
     return {
       /**
        * 登録アイテム
        */
-      list: {},
-      foodAmount: 0,
-      miscellaneousAmount: 0,
-      playAmount: 0,
-      /**
-       * ロード中かどうか
-       */
-      isLoaded: false
+      list: this.$store.state.list
     };
   },
-  computed: {},
-  created: function() {},
-  mounted: function() {},
   methods: {
-    drawChart() {
-      // グラフの描画
-      const ctx = document.getElementById('myChart').getContext('2d');
-      console.log(this.miscellaneousAmount);
-      const myChart = new Chart(ctx, {
-        type: 'horizontalBar',
-        data: {
-          labels: ['食費', '雑費', '飲み遊び費'],
-          datasets: [
-            {
-              label: '# of Votes',
-              data: [
-                this.foodAmount,
-                this.miscellaneousAmount,
-                this.playAmount
-              ],
-              backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(255, 206, 86, 0.2)'
-              ],
-              borderColor: [
-                'rgba(255,99,132,1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 206, 86, 1)'
-              ],
-              borderWidth: 1
-            }
-          ]
-        },
-        options: {
-          scales: {
-            yAxes: [
-              {
-                ticks: {
-                  beginAtZero: true
-                }
-              }
-            ]
-          }
-        }
-      });
+    getName(category) {
+      return getCategoryName(category);
     }
   }
 };
 </script>
 <style scoped lang="scss">
+.list {
+  text-align: center;
+}
 </style>
 
