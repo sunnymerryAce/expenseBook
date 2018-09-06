@@ -2,11 +2,12 @@
   .login
     .loading(v-show='!isLoaded') Loading...
     .login__content(v-show='isLoaded')
-      button.waves-effect.waves-light.btn.light-blue(@click='login') Googleアカウントでログイン
+      button.login-button.waves-effect.waves-light.btn.light-blue(@click='login') Googleアカウントでログイン
 </template>
 
 <script>
 import firebase from '@/plugins/firebase';
+import ls from 'localstorage-ttl';
 // import { store } from 'vuex';
 
 const googleProvider = new firebase.auth.GoogleAuthProvider();
@@ -33,15 +34,7 @@ export default {
      */
     login() {
       // firebaseでGoogleログインを実行する
-      firebase
-        .auth()
-        .signInWithRedirect(googleProvider)
-        .then((res) => {
-          console.log(res);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      firebase.auth().signInWithRedirect(googleProvider);
     },
     /**
      * ログイン状態を確認する
@@ -51,11 +44,11 @@ export default {
       firebase.auth().onAuthStateChanged((user) => {
         // ログイン済みの場合
         if (user) {
-          console.log('logged in');
           // ユーザ情報を格納
           this.$store.commit('setUserId', {
-            userId: user
+            userId: user.uid
           });
+          ls.set('userId', user.uid, 86400000);
           // トップ画面に遷移
           this.$router.push('/');
         } else {
@@ -68,8 +61,14 @@ export default {
 };
 </script>
 <style scoped lang="scss">
-.red {
-  color: red;
+.login-button {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  width: 100%;
 }
 </style>
 

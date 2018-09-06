@@ -117,7 +117,6 @@ export default {
           defaultDate: this.date ? this.date : new Date(),
           setDefaultDate: true,
           container: document.querySelector('.top'),
-          showDaysInNextAndPreviousMonths: true,
           format: 'yyyy/mm/dd',
           onSelect: (date) => {
             this.date = date;
@@ -135,7 +134,9 @@ export default {
         const month = this.date.getMonth() + 1;
         const date = this.date.getDate();
 
-        const path = this.$store.state.db.ref(`/expensebook/${Date.now()}`);
+        const path = this.$store.state.db.ref(
+          `${this.$store.getters.expenseDB}/${Date.now()}`
+        );
         const item = {
           year,
           month,
@@ -144,7 +145,9 @@ export default {
           category: this.category,
           amount: parseInt(this.amount, 10)
         };
-        path.set(item);
+        path.set(item).then(() => {
+          alert('registered');
+        });
       } else {
         return;
       }
@@ -160,7 +163,9 @@ export default {
         const month = this.date.getMonth() + 1;
         const date = this.date.getDate();
 
-        const path = this.$store.state.db.ref(`/expensebook/${this.id}`);
+        const path = this.$store.state.db.ref(
+          `${this.$store.getters.expenseDB}/${this.id}`
+        );
         const item = {
           year,
           month,
@@ -178,7 +183,9 @@ export default {
      * 削除ボタン押下時の処理
      */
     deleteItem() {
-      const path = this.$store.state.db.ref(`/expensebook/${this.id}`);
+      const path = this.$store.state.db.ref(
+        `${this.$store.getters.expenseDB}/${this.id}`
+      );
       path.set(null);
     }
   }
@@ -231,6 +238,9 @@ export default {
 }
 .button {
   margin: 12px 3px;
+}
+.select-month input {
+  width: 90px !important;
 }
 </style>
 

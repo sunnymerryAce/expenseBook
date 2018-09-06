@@ -1,8 +1,10 @@
+import ls from 'localstorage-ttl';
+
 export default function({ store, route, redirect }) {
-  if (!store.getters.isAuthenticated && route.name !== 'login') {
+  if (!ls.get('userId') && route.name !== 'login') {
     return redirect('/login');
   }
-  if (store.getters.isAuthenticated && route.name === 'login') {
+  if (ls.get('userId') && route.name === 'login') {
     return redirect('/');
   }
 }

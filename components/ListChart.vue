@@ -1,11 +1,12 @@
 <template lang="pug">
   .list__chart
-    canvas(width="100" height="161" ref="myChart")
+    canvas(width="100" height="140" ref="myChart")
 </template>
 
 <script>
 import firebase from '@/plugins/firebase';
 import Chart from 'chart.js';
+import EventBus from '~/assets/js/EventBus.js';
 
 export default {
   name: 'ListChart',
@@ -34,49 +35,26 @@ export default {
       /**
        * 各カテゴリの金額合計
        */
-      foodAmount: 0,
-      miscellaneousAmount: 0,
-      playAmount: 0,
-      bookAmount: 0,
-      transportAmount: 0,
-      fixedAmount: 0,
-      emergentAmount: 0,
-      disposableAmount: 0,
+      amountList: [],
       /**
        * ロード中かどうか
        */
       isLoaded: false
     };
   },
-  created() {},
+  created() {
+    EventBus.$on('DBLoaded', () => {
+      this.calcCategoryAmount();
+      this.drawChart();
+    });
+  },
   mounted() {
-    // // DBからデータを取得
-    // this.db = firebase.database();
-    // // カテゴリの設定
-    // const categoryPath = this.db.ref(`/category`);
-    // categoryPath.on('value', (snapshot) => {
-    //   this.categoryList = snapshot.val();
-    // });
-    // const path = this.db.ref(`/expensebook`);
-    // path.on('value', (snapshot) => {
-    //   console.log('db changed');
-
-    //   this.$store.commit('setList', snapshot.val());
     this.calcCategoryAmount();
     this.drawChart();
-    this.isLoaded = true;
-    // });
   },
   computed: {
     list() {
       return this.$store.state.list;
-    }
-  },
-  watch: {
-    list: function() {
-      console.log('watching');
-      this.calcCategoryAmount();
-      this.drawChart();
     }
   },
   methods: {
@@ -84,37 +62,24 @@ export default {
      * 各カテゴリーの合計金額を計算する
      */
     calcCategoryAmount() {
+      // DBのカテゴリリストに応じてamountListを初期化
+      if (this.$store.state.categoryList) {
+        console.log(this.$store.state.categoryList);
+        for (
+          let index = 0;
+          index < this.$store.state.categoryList.length;
+          index++
+        ) {
+          this.amountList.push(0);
+        }
+      }
       // 各ジャンルの合計金額を計算
       if (this.$store.state.list) {
         for (let key of Object.keys(this.$store.state.list)) {
-          switch (this.$store.state.list[key].category) {
-            case 0:
-              this.foodAmount += this.$store.state.list[key].amount;
-              break;
-            case 1:
-              this.miscellaneousAmount += this.$store.state.list[key].amount;
-              break;
-            case 2:
-              this.playAmount += this.$store.state.list[key].amount;
-              break;
-            case 3:
-              this.bookAmount += this.$store.state.list[key].amount;
-              break;
-            case 4:
-              this.transportAmount += this.$store.state.list[key].amount;
-              break;
-            case 5:
-              this.fixedAmount += this.$store.state.list[key].amount;
-              break;
-            case 6:
-              this.emergentAmount += this.$store.state.list[key].amount;
-              break;
-            case 7:
-              this.disposableAmount += this.$store.state.list[key].amount;
-              break;
-            default:
-              break;
-          }
+          console.log(this.$store.state.list[key].amount);
+          this.amountList[
+            this.$store.state.list[key].category
+          ] += this.$store.state.list[key].amount;
         }
       }
     },
@@ -131,17 +96,8 @@ export default {
           labels: this.$store.state.categoryList,
           datasets: [
             {
-              label: '# of Votes',
-              data: [
-                this.foodAmount,
-                this.miscellaneousAmount,
-                this.playAmount,
-                this.bookAmount,
-                this.transportAmount,
-                this.fixedAmount,
-                this.emergentAmount,
-                this.disposableAmount
-              ],
+              label: '出費',
+              data: this.amountList,
               backgroundColor: [
                 'rgba(244 ,67, 54, 0.2)',
                 'rgba(233, 30, 99, 0.2)',
@@ -163,6 +119,11 @@ export default {
                 'rgba(63, 81, 181, 1)'
               ],
               borderWidth: 1
+            },
+            {
+              label: '予算',
+              data: this.$store.state.budget,
+              type: 'horizontalBar'
             }
           ]
         },

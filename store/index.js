@@ -1,5 +1,7 @@
 import Vuex from 'vuex';
 import firebase from '@/plugins/firebase';
+import { resolve } from 'path';
+import EventBus from '~/assets/js/EventBus.js';
 
 const store = () =>
   new Vuex.Store({
@@ -19,7 +21,11 @@ const store = () =>
       /**
        * データベースのカテゴリ一覧
        */
-      categoryList: []
+      categoryList: [],
+      /**
+       * 予算
+       */
+      budget: []
     },
     mutations: {
       setUserId(state, args) {
@@ -33,6 +39,9 @@ const store = () =>
       },
       setCategoryList(state, categoryList) {
         state.categoryList = categoryList;
+      },
+      setBudget(state, budget) {
+        state.budget = budget;
       }
     },
     getters: {
@@ -42,20 +51,58 @@ const store = () =>
        */
       isAuthenticated(state) {
         return state.userId;
+      },
+      /**
+       * カテゴリ名
+       */
+      categoryName: (state) => (id) => {
+        return state.categoryList.length ? state.categoryList[id] : '';
+      },
+      /**
+       * DB/expenseBook
+       */
+      expenseDB(state) {
+        return `/${state.userId}/expense`;
+      },
+      /**
+       * DB/category
+       */
+      categoryDB(state) {
+        return `/${state.userId}/category`;
+      },
+      /**
+       * DB/budget
+       */
+      budgetDB(state) {
+        return `/${state.userId}/budget`;
       }
     },
     actions: {
-      getDatabase({ commit }) {
+      getDatabase({ commit, getters }) {
         // DBからデータを取得
         const db = firebase.database();
         commit('setDb', db);
-        // カテゴリ更新時のイベント設定
-        db.ref(`/category`).on('value', (snapshot) => {
-          commit('setCategoryList', snapshot.val());
+        const promise1 = new Promise((resolve) => {
+          db.ref(getters.budgetDB).on('value', (snapshot) => {
+            commit('setBudget', snapshot.val());
+            resolve();
+          });
         });
-        // exprenseBookアイテム更新時のイベント設定
-        db.ref(`/expensebook`).on('value', (snapshot) => {
-          commit('setList', snapshot.val());
+        const promise2 = new Promise((resolve) => {
+          db.ref(getters.categoryDB).on('value', (snapshot) => {
+            commit('setCategoryList', snapshot.val());
+            resolve();
+          });
+        });
+        const promise3 = new Promise((resolve) => {
+          db.ref(getters.expenseDB).on('value', (snapshot) => {
+            commit('setList', snapshot.val());
+            resolve();
+          });
+        });
+
+        Promise.all([promise1, promise2, promise3]).then(() => {
+          EventBus.$emit('DBLoaded');
         });
       }
     }

@@ -2,7 +2,7 @@
   tr.list-item.modal-trigger(@click='editItem')
     td {{registerDate}}
     td {{item.title}}
-    td {{getName(item.category)}}
+    td {{categoryName}}
     td {{item.amount}}
 </template>
 
@@ -11,7 +11,6 @@ import firebase from '@/plugins/firebase';
 import Chart from 'chart.js';
 import Navigation from '~/components/Navigation.vue';
 
-import { getCategoryName } from '~/assets/js/common.js';
 import EventBus from '~/assets/js/EventBus.js';
 
 export default {
@@ -32,13 +31,16 @@ export default {
      */
     registerDate() {
       return `${this.item.year}/${this.item.month}/${this.item.date}`;
+    },
+    /**
+     * カテゴリ名
+     */
+    categoryName() {
+      return this.$store.getters.categoryName(this.item.category);
     }
   },
   created() {},
   methods: {
-    getName(category) {
-      return getCategoryName(category);
-    },
     editItem() {
       EventBus.$emit('editItem', {
         id: this.id,

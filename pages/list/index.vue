@@ -23,8 +23,6 @@ import ListItem from '~/components/ListItem.vue';
 import RegisterModal from '~/components/RegisterModal.vue';
 import RegisterButton from '~/components/RegisterButton.vue';
 
-import { getCategoryName } from '~/assets/js/common.js';
-
 export default {
   name: 'List',
   components: {
@@ -42,11 +40,7 @@ export default {
     }
   },
   updated() {},
-  methods: {
-    getName(category) {
-      return getCategoryName(category);
-    }
-  }
+  methods: {}
 };
 </script>
 <style scoped lang="scss">
