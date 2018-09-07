@@ -39,7 +39,7 @@ export default {
       /**
        * ロード中かどうか
        */
-      isLoaded: false
+      isLoading: false
     };
   },
   created() {
@@ -48,13 +48,27 @@ export default {
       this.drawChart();
     });
   },
-  mounted() {
-    this.calcCategoryAmount();
-    this.drawChart();
+  async mounted() {
+    if (!this.isLoading) {
+      this.isLoading = true;
+      await this.calcCategoryAmount();
+      this.drawChart();
+    }
+    this.isLoading = false;
   },
   computed: {
     list() {
       return this.$store.state.list;
+    }
+  },
+  watch: {
+    async list() {
+      if (!this.isLoading) {
+        this.isLoading = true;
+        await this.calcCategoryAmount();
+        this.drawChart();
+      }
+      this.isLoading = false;
     }
   },
   methods: {
@@ -62,26 +76,29 @@ export default {
      * 各カテゴリーの合計金額を計算する
      */
     calcCategoryAmount() {
-      // DBのカテゴリリストに応じてamountListを初期化
-      if (this.$store.state.categoryList) {
-        console.log(this.$store.state.categoryList);
-        for (
-          let index = 0;
-          index < this.$store.state.categoryList.length;
-          index++
-        ) {
-          this.amountList.push(0);
+      console.log('amount');
+      return new Promise((resolve) => {
+        // DBのカテゴリリストに応じてamountListを初期化
+        this.amountList = [];
+        if (this.$store.state.categoryList) {
+          for (
+            let index = 0;
+            index < this.$store.state.categoryList.length;
+            index++
+          ) {
+            this.amountList.push(0);
+          }
         }
-      }
-      // 各ジャンルの合計金額を計算
-      if (this.$store.state.list) {
-        for (let key of Object.keys(this.$store.state.list)) {
-          console.log(this.$store.state.list[key].amount);
-          this.amountList[
-            this.$store.state.list[key].category
-          ] += this.$store.state.list[key].amount;
+        // 各ジャンルの合計金額を計算
+        if (this.$store.state.list) {
+          for (let key of Object.keys(this.$store.state.list)) {
+            this.amountList[
+              this.$store.state.list[key].category
+            ] += this.$store.state.list[key].amount;
+          }
         }
-      }
+        resolve();
+      });
     },
 
     /**

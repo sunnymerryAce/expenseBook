@@ -9,6 +9,7 @@
         .category Category
         .input-field.col.s12
           select(v-model='category')
+            option(value=-1) 未選択
             option(v-for='item, index in categoryList', :value='index') {{item}}
         .item-name Item Name
         input.register__input(type='text', v-model='title')
@@ -145,9 +146,7 @@ export default {
           category: this.category,
           amount: parseInt(this.amount, 10)
         };
-        path.set(item).then(() => {
-          alert('registered');
-        });
+        path.set(item).then(() => {});
       } else {
         return;
       }
