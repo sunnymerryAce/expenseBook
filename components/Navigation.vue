@@ -9,7 +9,12 @@
             </i>
           </router-link>
         </li>
-        <li><a href="mobile.html"><i class="material-icons">settings</i></a></li>
+        <li>
+          <router-link to="setting">
+            <i class="material-icons">settings
+            </i>
+          </router-link>
+        </li>
       </ul>
     </div>
   </nav>
@@ -19,6 +24,9 @@
 .title {
   left: 35%;
   font-size: 1.5rem;
+}
+.nav-wrapper {
+  text-align: center;
 }
 </style>
 

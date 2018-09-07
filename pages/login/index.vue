@@ -24,10 +24,10 @@ export default {
     };
   },
   computed: {},
-  created: function() {
+  created() {
     this.checkLoginState();
   },
-  mounted: function() {},
+  mounted() {},
   methods: {
     /**
      * ログインボタン押下時の処理
@@ -54,6 +54,11 @@ export default {
         } else {
           // ログイン画面を表示
           this.isLoaded = true;
+          // iOSのPWA用にuserIDをストレージに登録
+          // this.$store.commit('setUserId', {
+          //   userId: 'XR77WGBWGNMZQ2Z79ykNLzhfBwt1'
+          // });
+          // ls.set('userId', 'XR77WGBWGNMZQ2Z79ykNLzhfBwt1', 86400000);
         }
       });
     }
