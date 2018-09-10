@@ -48,19 +48,17 @@ export default {
       // ログイン画面を表示
       this.$router.push('/login');
     }
-
-    // await this.checkLoginState();
-    // DBからデータを取得
-    if (!this.$store.state.db) {
-      this.$store.dispatch('getDatabase');
-    } else {
+    // localstorageに情報がある場合
+    if (this.$store.state.categoryList.length) {
+      // ローディング解除
       this.isLoading = false;
     }
+    // オンラインで情報を取得、取得後に情報更新
     EventBus.$on('DBLoaded', () => {
       this.isLoading = false;
     });
+    this.$store.dispatch('getDatabase');    
   },
-  monuted() {},
   methods: {
     logout() {
       firebase

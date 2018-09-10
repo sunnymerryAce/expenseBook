@@ -100,7 +100,6 @@ const store = () =>
             resolve();
           });
         });
-
         Promise.all([promise1, promise2, promise3]).then(() => {
           EventBus.$emit('DBLoaded');
         });

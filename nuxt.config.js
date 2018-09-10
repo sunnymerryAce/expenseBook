@@ -12,15 +12,6 @@ module.exports = {
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { hid: 'description', name: 'description', content: 'Nuxt.js project' }
     ],
-    script: [
-      {
-        src: 'https://code.jquery.com/jquery-3.3.1.min.js'
-      },
-      {
-        src:
-          'https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js'
-      }
-    ],
     link: [
       {
         rel: 'stylesheet',
@@ -41,10 +32,15 @@ module.exports = {
   router: {
     middleware: 'authentication'
   },
+  plugins: [
+    { src: "~plugins/persistedstate.js", ssr: false },
+    
+  ],
   /*
   ** Build configuration
   */
   build: {
+    vendor: ['localstorage-ttl', 'jquery', 'materialize-css'],
     styleResources: {
       scss: './assets/scss/common.scss',
       options: {
@@ -53,9 +49,11 @@ module.exports = {
     plugins: [
       new webpack.ProvidePlugin({
         $: 'jquery',
-        jQuery: 'jquery'
+        jQuery: 'jquery',
+        // Materialize.css用
+        "window.jQuery": "jquery"
       })
-    ],
+    ],  
     /*
     ** Run ESLint on save
     */

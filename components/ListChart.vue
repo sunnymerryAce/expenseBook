@@ -46,40 +46,37 @@ export default {
     };
   },
   created() {
-    EventBus.$on('DBLoaded', () => {
-      this.calcCategoryAmount();
-      this.drawChart();
-    });
+    EventBus.$on('DBLoaded', this.readyChart);
   },
-  async mounted() {
-    if (!this.isLoading) {
-      this.isLoading = true;
-      await this.calcCategoryAmount();
-      this.drawChart();
-    }
-    this.isLoading = false;
+  mounted() {
+    this.readyChart();
   },
   computed: {
     list() {
       return this.$store.state.list;
     }
   },
+  destroyed(){
+    // EventBus.$off('DBLoaded', this.readyChart);
+  },
   watch: {
-    async list() {
+    list() {
+      this.readyChart();
+    }
+  },
+  methods: {
+    async readyChart() {
       if (!this.isLoading) {
         this.isLoading = true;
         await this.calcCategoryAmount();
         this.drawChart();
       }
       this.isLoading = false;
-    }
-  },
-  methods: {
+    },
     /**
      * 各カテゴリーの合計金額を計算する
      */
     calcCategoryAmount() {
-      console.log('amount');
       return new Promise((resolve) => {
         // DBのカテゴリリストに応じてamountListを初期化
         this.amountList = [];
@@ -116,7 +113,10 @@ export default {
      * グラフを描画する
      */
     drawChart() {
+      console.log('draw');
+      
       // グラフの描画
+      if(!this.$refs.myChart) return;
       const ctx = this.$refs.myChart.getContext('2d');
       const myChart = new Chart(ctx, {
         type: 'horizontalBar',
