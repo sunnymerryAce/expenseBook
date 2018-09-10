@@ -26,19 +26,18 @@ module.exports = {
         rel: 'stylesheet',
         href: 'https://fonts.googleapis.com/icon?family=Material+Icons'
       },
-      {
-        rel: 'stylesheet',
-        href:
-          'https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css'
-      },
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
     ]
   },
+  css: [
+  ],
   /*
   ** Customize the progress bar color
   */
   loading: { color: '#3B8070' },
-  modules: [['@nuxtjs/pwa', { icon: false }]],
+  modules: [
+    ['@nuxtjs/pwa', { icon: false }]
+  ],
   router: {
     middleware: 'authentication'
   },
@@ -46,6 +45,11 @@ module.exports = {
   ** Build configuration
   */
   build: {
+    styleResources: {
+      scss: './assets/scss/common.scss',
+      options: {
+      }
+    },
     plugins: [
       new webpack.ProvidePlugin({
         $: 'jquery',

@@ -7,6 +7,7 @@
 import firebase from '@/plugins/firebase';
 import Chart from 'chart.js';
 import EventBus from '~/assets/js/EventBus.js';
+import CONST from '~/assets/js/CONST.js';
 
 export default {
   name: 'ListChart',
@@ -36,6 +37,8 @@ export default {
        * 各カテゴリの金額合計
        */
       amountList: [],
+      barColors: [],
+      barBackgroundColors: [],
       /**
        * ロード中かどうか
        */
@@ -97,6 +100,14 @@ export default {
             ] += this.$store.state.list[key].amount;
           }
         }
+        // 各ジャンルに色を設定
+        let i = 0;
+        for (let key of Object.keys(CONST.MATERIAL_COLOR_PALETTES)) {
+          this.barColors[i] = CONST.MATERIAL_COLOR_PALETTES[key].DARK;
+          this.barBackgroundColors[i] =
+            CONST.MATERIAL_COLOR_PALETTES[key].LIGHT;
+          i += 1;
+        }
         resolve();
       });
     },
@@ -115,26 +126,8 @@ export default {
             {
               label: '出費',
               data: this.amountList,
-              backgroundColor: [
-                'rgba(244 ,67, 54, 0.2)',
-                'rgba(233, 30, 99, 0.2)',
-                'rgba(156, 39, 176, 0.2)',
-                'rgba(204,102,153, 0.2)',
-                'rgba(10,255,255, 0.2)',
-                'rgba(0,255,0, 0.2)',
-                'rgba(255,255,0, 0.2)',
-                'rgba(63, 81, 181, 0.2)'
-              ],
-              borderColor: [
-                'rgba(244 ,67, 54,1)',
-                'rgba(233, 30, 99, 1)',
-                'rgba(156, 39, 176, 1)',
-                'rgba(204,102,153, 1)',
-                'rgba(0,255,255, 1)',
-                'rgba(0,255,0, 1)',
-                'rgba(255,255,0, 1)',
-                'rgba(63, 81, 181, 1)'
-              ],
+              backgroundColor: this.barBackgroundColors,
+              borderColor: this.barColors,
               borderWidth: 1
             },
             {

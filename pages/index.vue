@@ -5,7 +5,7 @@
       Navigation
       RegisterModal
       ListChart(name='chart')
-      button.waves-effect.waves-light.btn.logout-button(@click='logout') Logout
+      button.waves-effect.waves-light.btn.logout-button.light-blue.darken-3(@click='logout') Logout
       RegisterButton
 </template>
 
@@ -62,20 +62,6 @@ export default {
   },
   monuted() {},
   methods: {
-    /**
-     * ログイン状態を確認する
-     */
-    // checkLoginState() {
-    //   // ログイン状態のチェック
-    //   return new Promise((resolve) => {
-    //     firebase.auth().onAuthStateChanged((user) => {
-    //       // ログイン済みの場合
-    //     });
-    //   });
-    // },
-    /**
-     * ログアウトボタン押下時の処理
-     */
     logout() {
       firebase
         .auth()

@@ -1,9 +1,9 @@
 <template lang="pug">
   tr.list-item.modal-trigger(@click='editItem')
     td {{registerDate}}
-    td {{item.title}}
     td {{categoryName}}
     td {{item.amount}}
+    td {{item.title}}
 </template>
 
 <script>

@@ -1,7 +1,7 @@
 <template lang="pug">
   <nav>
-    <div class="nav-wrapper">
-      <router-link to='/'>Expense Book</router-link>
+    <div class="nav-wrapper light-blue">
+      <router-link to='/' class='title'>Expense Book</router-link>
       <ul class="right">
         <li>
           <router-link to="list">
@@ -27,6 +27,9 @@
 }
 .nav-wrapper {
   text-align: center;
+}
+.title {
+  font-size: 24px;
 }
 </style>
 

@@ -7,9 +7,9 @@
         thead
           tr
             th Date
-            th Title
             th Category
             th Amount
+            th Title
         tbody
           ListItem(v-for='item, key in list', :item='item', :id='key', index='index')
     RegisterButton

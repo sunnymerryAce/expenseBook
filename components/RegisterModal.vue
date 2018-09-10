@@ -7,7 +7,7 @@
         .amount Amount
         input.register__input(type='number', v-model='amount')
         .category Category
-        .input-field.col.s12
+        .input-field.col.s12.blue-text
           select(v-model='category')
             option(value=-1) 未選択
             option(v-for='item, index in categoryList', :value='index') {{item}}
@@ -26,6 +26,7 @@
 
 <script>
 import EventBus from '~/assets/js/EventBus.js';
+// import 'materialize-css/dist/js/materialize.min.js';
 
 export default {
   name: 'RegisterModal',
@@ -192,7 +193,7 @@ export default {
 </script>
 
 
-<style>
+<style lang='scss'>
 .register {
   width: 80%;
   margin: 0 auto;
@@ -234,6 +235,27 @@ export default {
 }
 .datepicker-date-display {
   display: none;
+}
+.datepicker-row {
+  .is-selected {
+    @extend .light-blue;
+    @extend .darken-2;
+  }
+  .is-today {
+    @extend .light-blue-text;
+    @extend .text-darken-2;
+  }
+} 
+.datepicker-cancel, .datepicker-clear, .datepicker-today, .datepicker-done {
+  @extend .light-blue-text;
+  @extend .text-darken-2;
+}
+.dropdown-content > li > span {
+  @extend .light-blue-text;
+  @extend .text-darken-2;
+}
+input:not(.browser-default):focus:not([readonly]) {
+  border-bottom: 1px solid #0288d1 !important;
 }
 .button {
   margin: 12px 3px;

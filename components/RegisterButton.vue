@@ -1,5 +1,5 @@
 <template lang="pug">
-  a.add-button.btn-floating.btn-large.waves-effect.waves-light.light-blue.modal-trigger(data-target="registerModal")
+  a.add-button.btn-floating.btn-large.waves-effect.waves-light.pink.modal-trigger(data-target="registerModal")
     i.material-icons add
 </template>
 
@@ -19,7 +19,7 @@ export default {
 
 <style>
 .add-button {
-  position: fixed;
+  position: fixed !important;
   bottom: 5vw;
   right: 5vw;
 }

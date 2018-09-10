@@ -8,7 +8,6 @@
 <script>
 import firebase from '@/plugins/firebase';
 import ls from 'localstorage-ttl';
-// import { store } from 'vuex';
 
 const googleProvider = new firebase.auth.GoogleAuthProvider();
 
