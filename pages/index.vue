@@ -48,16 +48,20 @@ export default {
       // ログイン画面を表示
       this.$router.push('/login');
     }
-    // localstorageに情報がある場合
-    if (this.$store.state.categoryList.length) {
-      // ローディング解除
-      this.isLoading = false;
-    }
-    // オンラインで情報を取得、取得後に情報更新
+    // オンラインで情報取得後に情報更新
     EventBus.$on('DBLoaded', () => {
       this.isLoading = false;
     });
+    // 情報をRDBから取得
     this.$store.dispatch('getDatabase');    
+    // DBのオンライン状態を確認
+    const connectedRef = firebase.database().ref(".info/connected");
+    connectedRef.once("value", (snap) => {
+      if (!snap.val()) {
+        // オフライン状態の場合、localstorageの情報を表示
+        this.isLoading = false;
+      }
+    });
   },
   methods: {
     logout() {

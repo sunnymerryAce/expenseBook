@@ -102,8 +102,7 @@ const CONST = {
       NORMAL: '#F44336',
       LIGHT: '#EF9A9A',
       DARK: '#D32F2F'
-    },
-
+    }
   }
 };
 

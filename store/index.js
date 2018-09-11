@@ -13,7 +13,7 @@ const store = () =>
       /**
        * Firebase RDB参照先
        */
-      db: null,
+      db: firebase.database(),
       /**
        * データベース内のアイテム
        */
@@ -31,9 +31,9 @@ const store = () =>
       setUserId(state, args) {
         state.userId = args.userId;
       },
-      setDb(state, database) {
-        state.db = database;
-      },
+      // setDb(state, database) {
+      //   state.db = database;
+      // },
       setList(state, list) {
         state.list = list;
       },
@@ -78,24 +78,22 @@ const store = () =>
       }
     },
     actions: {
-      getDatabase({ commit, getters }) {
-        // DBからデータを取得
-        const db = firebase.database();
-        commit('setDb', db);
+      getDatabase({ commit, getters, state }) {
         const promise1 = new Promise((resolve) => {
-          db.ref(getters.budgetDB).on('value', (snapshot) => {
+          state.db.ref(getters.budgetDB).on('value', (snapshot) => {
             commit('setBudget', snapshot.val());
             resolve();
           });
         });
         const promise2 = new Promise((resolve) => {
-          db.ref(getters.categoryDB).on('value', (snapshot) => {
+          state.db.ref(getters.categoryDB).on('value', (snapshot) => {
             commit('setCategoryList', snapshot.val());
             resolve();
           });
         });
         const promise3 = new Promise((resolve) => {
-          db.ref(getters.expenseDB).on('value', (snapshot) => {
+          console.log(state.db);
+          state.db.ref(getters.expenseDB).on('value', (snapshot) => {
             commit('setList', snapshot.val());
             resolve();
           });

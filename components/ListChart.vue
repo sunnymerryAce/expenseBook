@@ -46,20 +46,28 @@ export default {
     };
   },
   created() {
+    // 初回のDBロード完了を検知
     EventBus.$on('DBLoaded', this.readyChart);
   },
   mounted() {
-    this.readyChart();
+      if (!navigator.onLine) {
+        console.log('offline');
+        // オフライン状態の場合、localstorageの情報を表示
+        this.readyChart();
+      } else {
+        console.log('online');        
+      }
   },
   computed: {
     list() {
       return this.$store.state.list;
     }
   },
-  destroyed(){
+  destroyed() {
     // EventBus.$off('DBLoaded', this.readyChart);
   },
   watch: {
+    // 初回ロード以降の変更をこちらで検知
     list() {
       this.readyChart();
     }
@@ -107,10 +115,10 @@ export default {
         }
         // 赤字カテゴリの色を指定
         this.amountList.forEach((amount, index) => {
-          if(amount > this.$store.state.budget[index]) {
-          this.barColors[index] = CONST.MATERIAL_COLOR_PALETTES.RED.DARK;
-          this.barBackgroundColors[index] =
-            CONST.MATERIAL_COLOR_PALETTES.RED.NORMAL;
+          if (amount > this.$store.state.budget[index]) {
+            this.barColors[index] = CONST.MATERIAL_COLOR_PALETTES.RED.DARK;
+            this.barBackgroundColors[index] =
+              CONST.MATERIAL_COLOR_PALETTES.RED.NORMAL;
           }
         });
         resolve();
@@ -122,9 +130,9 @@ export default {
      */
     drawChart() {
       console.log('draw');
-      
+
       // グラフの描画
-      if(!this.$refs.myChart) return;
+      if (!this.$refs.myChart) return;
       const ctx = this.$refs.myChart.getContext('2d');
       const myChart = new Chart(ctx, {
         type: 'bar',
@@ -145,7 +153,10 @@ export default {
               data: this.amountList,
               backgroundColor: this.barBackgroundColors,
               borderColor: this.barColors,
-              borderWidth: 1
+              borderWidth: 1,
+              options: {
+                barPercentage: 0.95
+              }
             }
           ]
         },

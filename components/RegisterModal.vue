@@ -88,7 +88,6 @@ export default {
       this.category = params.category;
       this.amount = params.amount;
       this.materializeModal[0].open();
-      console.log(this.date);
     });
   },
   mounted() {
@@ -99,7 +98,6 @@ export default {
   },
   updated: function() {
     // DBからカテゴリを取得しselectboxが更新された後、セレクトボックスを初期化する
-    // Materialize.css のセレクトボックス有効化
     var elems = document.querySelectorAll('select');
     var instances = M.FormSelect.init(elems);
   },
@@ -147,7 +145,9 @@ export default {
           category: this.category,
           amount: parseInt(this.amount, 10)
         };
-        path.set(item).then(() => {});
+        path.set(item).then(() => {
+          console.log('setItem');
+        });
       } else {
         return;
       }
