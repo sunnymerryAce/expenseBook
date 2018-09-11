@@ -242,7 +242,7 @@ export default {
     @extend .darken-2;
   }
   .is-today {
-    @extend .light-blue-text;
+    @extend .yellow-text;
     @extend .text-darken-2;
   }
 } 

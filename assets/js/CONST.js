@@ -13,16 +13,11 @@ const CONST = {
     ABOUT: 'about'
   },
   MATERIAL_COLOR_PALETTES: {
-    RED: {
-      NORMAL: '#F44336',
-      LIGHT: '#EF9A9A',
-      DARK: '#D32F2F'
-    },
-    PINK: {
-      NORMAL: '#E91E63',
-      LIGHT: '#F48FB1',
-      DARK: '#C2185B'
-    },
+    // PINK: {
+    //   NORMAL: '#E91E63',
+    //   LIGHT: '#F48FB1',
+    //   DARK: '#C2185B'
+    // },
     PURPLE: {
       NORMAL: '#9C27B0',
       LIGHT: '#CE93D8',
@@ -53,16 +48,16 @@ const CONST = {
       LIGHT: '#80DEEA',
       DARK: '#0097A7'
     },
-    TEAL: {
-      NORMAL: '#009688',
-      LIGHT: '#80CBC4',
-      DARK: '#00796B'
-    },
-    GREEN: {
-      NORMAL: '#4CAF50',
-      LIGHT: '#A5D6A7',
-      DARK: '#388E3C'
-    },
+    // TEAL: {
+    //   NORMAL: '#009688',
+    //   LIGHT: '#80CBC4',
+    //   DARK: '#00796B'
+    // },
+    // GREEN: {
+    //   NORMAL: '#4CAF50',
+    //   LIGHT: '#A5D6A7',
+    //   DARK: '#388E3C'
+    // },
     LIGHT_GREEN: {
       NORMAL: '#8BC34A',
       LIGHT: '#C5E1A5',
@@ -78,16 +73,16 @@ const CONST = {
       LIGHT: '#FFF59D',
       DARK: '#FBC02D'
     },
-    AMBER: {
-      NORMAL: '#FFC107',
-      LIGHT: '#FFE082',
-      DARK: '#FFA000'
-    },
-    ORANGE: {
-      NORMAL: '#FF9800',
-      LIGHT: '#FFCC80',
-      DARK: '#F57C00'
-    },
+    // AMBER: {
+    //   NORMAL: '#FFC107',
+    //   LIGHT: '#FFE082',
+    //   DARK: '#FFA000'
+    // },
+    // ORANGE: {
+    //   NORMAL: '#FF9800',
+    //   LIGHT: '#FFCC80',
+    //   DARK: '#F57C00'
+    // },
     DEEP_ORANGE: {
       NORMAL: '#FF5722',
       LIGHT: '#FFAB91',
@@ -102,7 +97,13 @@ const CONST = {
       NORMAL: '#9E9E9E',
       LIGHT: '#EEEEEE',
       DARK: '#616161'
-    }
+    },
+    RED: {
+      NORMAL: '#F44336',
+      LIGHT: '#EF9A9A',
+      DARK: '#D32F2F'
+    },
+
   }
 };
 

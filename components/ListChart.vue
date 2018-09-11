@@ -105,6 +105,14 @@ export default {
             CONST.MATERIAL_COLOR_PALETTES[key].LIGHT;
           i += 1;
         }
+        // 赤字カテゴリの色を指定
+        this.amountList.forEach((amount, index) => {
+          if(amount > this.$store.state.budget[index]) {
+          this.barColors[index] = CONST.MATERIAL_COLOR_PALETTES.RED.DARK;
+          this.barBackgroundColors[index] =
+            CONST.MATERIAL_COLOR_PALETTES.RED.NORMAL;
+          }
+        });
         resolve();
       });
     },
@@ -119,21 +127,25 @@ export default {
       if(!this.$refs.myChart) return;
       const ctx = this.$refs.myChart.getContext('2d');
       const myChart = new Chart(ctx, {
-        type: 'horizontalBar',
+        type: 'bar',
         data: {
           labels: this.$store.state.categoryList,
           datasets: [
+            {
+              label: '予算',
+              data: this.$store.state.budget,
+              type: 'bubble',
+              radius: 5,
+              pointStyle: 'star',
+              backgroundColor: 'rgba(13,71,161,0.1)',
+              borderColor: 'rgba(13,71,161,0.5)'
+            },
             {
               label: '出費',
               data: this.amountList,
               backgroundColor: this.barBackgroundColors,
               borderColor: this.barColors,
               borderWidth: 1
-            },
-            {
-              label: '予算',
-              data: this.$store.state.budget,
-              type: 'horizontalBar'
             }
           ]
         },
