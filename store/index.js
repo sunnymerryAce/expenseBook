@@ -1,6 +1,7 @@
 import Vuex from 'vuex';
 import firebase from '@/plugins/firebase';
-import { resolve } from 'path';
+import 'firebase/firestore';
+
 import EventBus from '~/assets/js/EventBus.js';
 
 const store = () =>
@@ -11,37 +12,41 @@ const store = () =>
        */
       userId: '',
       /**
-       * Firebase RDB参照先
+       * Firestoreの参照
        */
-      db: firebase.database(),
+      db: firebase.firestore(),
       /**
-       * データベース内のアイテム
+       * 支出項目コレクションの参照
        */
-      list: {},
+      itemsRef: null,
       /**
-       * データベースのカテゴリ一覧
+       * カテゴリ/予算コレクションの参照
        */
-      categoryList: [],
+      categoryListRef: null,
       /**
-       * 予算
+       * データベース内のアイテム一覧
        */
-      budget: []
+      items: [],
+      /**
+       * データベースのカテゴリ/予算一覧
+       */
+      categoryList: []
     },
     mutations: {
-      setUserId(state, args) {
-        state.userId = args.userId;
+      setUserId(state, userId) {
+        state.userId = userId;
       },
-      // setDb(state, database) {
-      //   state.db = database;
-      // },
-      setList(state, list) {
-        state.list = list;
+      setItemsRef(state, itemsRef) {
+        state.itemsRef = itemsRef;
+      },
+      setCategoryListRef(state, categoryListRef) {
+        state.categoryListRef = categoryListRef;
+      },
+      setItems(state, items) {
+        state.items = items;
       },
       setCategoryList(state, categoryList) {
         state.categoryList = categoryList;
-      },
-      setBudget(state, budget) {
-        state.budget = budget;
       }
     },
     getters: {
@@ -63,42 +68,50 @@ const store = () =>
        */
       expenseDB(state) {
         return `/${state.userId}/expense`;
-      },
-      /**
-       * DB/category
-       */
-      categoryDB(state) {
-        return `/${state.userId}/category`;
-      },
-      /**
-       * DB/budget
-       */
-      budgetDB(state) {
-        return `/${state.userId}/budget`;
       }
     },
     actions: {
-      getDatabase({ commit, getters, state }) {
+      /**
+       * ユーザIDを保存し、データベースへの参照を取得する
+       */
+      initDatabase({ commit, state }, userId) {
+        commit('setUserId', userId);
+        commit(
+          'setItemsRef',
+          state.db.doc(`users/${state.userId}`).collection('expense')
+        );
+        commit(
+          'setCategoryListRef',
+          state.db.doc(`users/${state.userId}`).collection('category')
+        );
+      },
+      /**
+       * データベースからデータを取得する
+       */
+      getDatabase({ commit, state }) {
+        // カテゴリ
         const promise1 = new Promise((resolve) => {
-          state.db.ref(getters.budgetDB).on('value', (snapshot) => {
-            commit('setBudget', snapshot.val());
+          const categoryList = [];
+          state.categoryListRef.onSnapshot((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              categoryList.push(doc.data());
+            });
+            commit('setCategoryList', categoryList);
             resolve();
           });
         });
+        // 支出項目
         const promise2 = new Promise((resolve) => {
-          state.db.ref(getters.categoryDB).on('value', (snapshot) => {
-            commit('setCategoryList', snapshot.val());
+          const items = [];
+          state.itemsRef.onSnapshot((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              items.push(doc.data());
+            });
+            commit('setItems', items);
             resolve();
           });
         });
-        const promise3 = new Promise((resolve) => {
-          console.log(state.db);
-          state.db.ref(getters.expenseDB).on('value', (snapshot) => {
-            commit('setList', snapshot.val());
-            resolve();
-          });
-        });
-        Promise.all([promise1, promise2, promise3]).then(() => {
+        Promise.all([promise1, promise2]).then(() => {
           EventBus.$emit('DBLoaded');
         });
       }

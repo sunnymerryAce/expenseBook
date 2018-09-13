@@ -47,5 +47,8 @@ export default {
 .list {
   text-align: center;
 }
+.list__content {
+  margin-bottom: 100px;
+}
 </style>
 

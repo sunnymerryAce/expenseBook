@@ -50,17 +50,23 @@ export default {
     EventBus.$on('DBLoaded', this.readyChart);
   },
   mounted() {
-      if (!navigator.onLine) {
-        console.log('offline');
-        // オフライン状態の場合、localstorageの情報を表示
-        this.readyChart();
-      } else {
-        console.log('online');        
-      }
+    if (!navigator.onLine) {
+      console.log('offline');
+      // オフライン状態の場合、localstorageの情報を表示
+      this.readyChart();
+    } else {
+      console.log('online');
+    }
   },
   computed: {
-    list() {
-      return this.$store.state.list;
+    items() {
+      return this.$store.state.items;
+    },
+    budgetList() {
+      return this.$store.state.categoryList.map((category) => category.budget);
+    },
+    categoryLabels() {
+      return this.$store.state.categoryList.map((category) => category.title);
     }
   },
   destroyed() {
@@ -68,7 +74,7 @@ export default {
   },
   watch: {
     // 初回ロード以降の変更をこちらで検知
-    list() {
+    items() {
       this.readyChart();
     }
   },
@@ -86,26 +92,7 @@ export default {
      */
     calcCategoryAmount() {
       return new Promise((resolve) => {
-        // DBのカテゴリリストに応じてamountListを初期化
-        this.amountList = [];
-        if (this.$store.state.categoryList) {
-          for (
-            let index = 0;
-            index < this.$store.state.categoryList.length;
-            index++
-          ) {
-            this.amountList.push(0);
-          }
-        }
-        // 各ジャンルの合計金額を計算
-        if (this.$store.state.list) {
-          for (let key of Object.keys(this.$store.state.list)) {
-            this.amountList[
-              this.$store.state.list[key].category
-            ] += this.$store.state.list[key].amount;
-          }
-        }
-        // 各ジャンルに色を設定
+        // 各カテゴリに色を設定する
         let i = 0;
         for (let key of Object.keys(CONST.MATERIAL_COLOR_PALETTES)) {
           this.barColors[i] = CONST.MATERIAL_COLOR_PALETTES[key].DARK;
@@ -113,9 +100,19 @@ export default {
             CONST.MATERIAL_COLOR_PALETTES[key].LIGHT;
           i += 1;
         }
-        // 赤字カテゴリの色を指定
+        // 各カテゴリの合計金額を計算
+        if (this.$store.state.items) {
+          this.$store.state.items.forEach((item) => {
+            // 合計金額に0円を設定
+            if (!this.amountList[item.category]) {
+              this.amountList[item.category] = 0;
+            }
+            this.amountList[item.category] += item.amount;
+          });
+        }
+        // 赤字のカテゴリに赤色を指定
         this.amountList.forEach((amount, index) => {
-          if (amount > this.$store.state.budget[index]) {
+          if (amount > this.budgetList[index]) {
             this.barColors[index] = CONST.MATERIAL_COLOR_PALETTES.RED.DARK;
             this.barBackgroundColors[index] =
               CONST.MATERIAL_COLOR_PALETTES.RED.NORMAL;
@@ -137,11 +134,11 @@ export default {
       const myChart = new Chart(ctx, {
         type: 'bar',
         data: {
-          labels: this.$store.state.categoryList,
+          labels: this.categoryLabels,
           datasets: [
             {
               label: '予算',
-              data: this.$store.state.budget,
+              data: this.budgetList,
               type: 'bubble',
               radius: 5,
               pointStyle: 'star',

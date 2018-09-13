@@ -41,9 +41,7 @@ export default {
   created() {
     if (ls.get('userId')) {
       // ユーザ情報を格納
-      this.$store.commit('setUserId', {
-        userId: ls.get('userId')
-      });
+      this.$store.dispatch('initDatabase', ls.get('userId'));
     } else {
       // ログイン画面を表示
       this.$router.push('/login');
@@ -53,10 +51,10 @@ export default {
       this.isLoading = false;
     });
     // 情報をRDBから取得
-    this.$store.dispatch('getDatabase');    
+    this.$store.dispatch('getDatabase');
     // DBのオンライン状態を確認
-    const connectedRef = firebase.database().ref(".info/connected");
-    connectedRef.once("value", (snap) => {
+    const connectedRef = firebase.database().ref('.info/connected');
+    connectedRef.once('value', (snap) => {
       if (!snap.val()) {
         // オフライン状態の場合、localstorageの情報を表示
         this.isLoading = false;

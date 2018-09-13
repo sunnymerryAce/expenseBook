@@ -10,7 +10,7 @@
         .input-field.col.s12.blue-text
           select(v-model='category')
             option(value=-1) 未選択
-            option(v-for='item, index in categoryList', :value='index') {{item}}
+            option(v-for='category, index in categoryList', :value='index') {{category.title}}
         .item-name Item Name
         input.register__input(type='text', v-model='title')
         .register(v-if='!isFixing')
@@ -20,7 +20,7 @@
         .fix(v-if='isFixing')
           button.button.waves-effect.waves-light.btn.light-blue.modal-close(
             :class="{disabled: !requiredInfoFilled}",
-            @click='editItem') EDIT
+            @click='register') EDIT
           button.button.waves-effect.waves-light.btn.red.darken-4.modal-close(@click='deleteItem') DELETE
 </template>
 
@@ -126,55 +126,23 @@ export default {
       this.date = this.materializeDatePicker[0].date;
     },
     /**
-     * 登録ボタン押下時の処理
+     * 登録、編集ボタン押下時の処理
      */
     register() {
       if (this.requiredInfoFilled) {
-        const year = this.date.getFullYear();
-        const month = this.date.getMonth() + 1;
-        const date = this.date.getDate();
-
-        const path = this.$store.state.db.ref(
-          `${this.$store.getters.expenseDB}/${Date.now()}`
-        );
+        const docId = this.isFixing ? this.id : Date.now().toString();
         const item = {
-          year,
-          month,
-          date,
-          title: this.title,
+          date: this.date,
           category: this.category,
-          amount: parseInt(this.amount, 10)
+          amount: parseInt(this.amount, 10),
+          title: this.title
         };
-        path.set(item).then(() => {
-          console.log('setItem');
-        });
-      } else {
-        return;
-      }
-    },
-    /**
-     * 編集ボタン押下時の処理
-     */
-    editItem() {
-      if (this.requiredInfoFilled) {
-        console.log(this.category);
-
-        const year = this.date.getFullYear();
-        const month = this.date.getMonth() + 1;
-        const date = this.date.getDate();
-
-        const path = this.$store.state.db.ref(
-          `${this.$store.getters.expenseDB}/${this.id}`
-        );
-        const item = {
-          year,
-          month,
-          date,
-          title: this.title,
-          category: this.category,
-          amount: parseInt(this.amount, 10)
-        };
-        path.set(item);
+        this.$store.state.itemsRef
+          .doc(docId)
+          .set(item)
+          .then(() => {
+            console.log('setItem');
+          });
       } else {
         return;
       }
@@ -183,10 +151,7 @@ export default {
      * 削除ボタン押下時の処理
      */
     deleteItem() {
-      const path = this.$store.state.db.ref(
-        `${this.$store.getters.expenseDB}/${this.id}`
-      );
-      path.set(null);
+      this.$store.state.itemsRef.doc(this.id).delete();
     }
   }
 };
@@ -245,8 +210,11 @@ export default {
     @extend .yellow-text;
     @extend .text-darken-2;
   }
-} 
-.datepicker-cancel, .datepicker-clear, .datepicker-today, .datepicker-done {
+}
+.datepicker-cancel,
+.datepicker-clear,
+.datepicker-today,
+.datepicker-done {
   @extend .light-blue-text;
   @extend .text-darken-2;
 }
