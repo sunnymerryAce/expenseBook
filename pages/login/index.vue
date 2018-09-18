@@ -43,10 +43,11 @@ export default {
       firebase.auth().onAuthStateChanged((user) => {
         // ログイン済みの場合
         if (user) {
-          // ユーザ情報を格納
+          // VUEX、localstorageにユーザ情報を格納
           this.$store.commit('setUserId', {
             userId: user.uid
           });
+          // localstorageの有効期限は24h
           ls.set('userId', user.uid, 86400000);
           // トップ画面に遷移
           this.$router.push('/');

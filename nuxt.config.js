@@ -20,21 +20,17 @@ module.exports = {
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
     ]
   },
-  css: [
-  ],
+  css: [],
   /*
   ** Customize the progress bar color
   */
   loading: { color: '#3B8070' },
-  modules: [
-    ['@nuxtjs/pwa', { icon: false }]
-  ],
+  modules: [['@nuxtjs/pwa', { icon: false }]],
   router: {
     middleware: 'authentication'
   },
   plugins: [
-    { src: "~plugins/persistedstate.js", ssr: false },
-    
+    // { src: "~plugins/persistedstate.js", ssr: false },
   ],
   /*
   ** Build configuration
@@ -43,17 +39,16 @@ module.exports = {
     vendor: ['localstorage-ttl', 'jquery', 'materialize-css'],
     styleResources: {
       scss: './assets/scss/common.scss',
-      options: {
-      }
+      options: {}
     },
     plugins: [
       new webpack.ProvidePlugin({
         $: 'jquery',
         jQuery: 'jquery',
         // Materialize.css用
-        "window.jQuery": "jquery"
+        'window.jQuery': 'jquery'
       })
-    ],  
+    ],
     /*
     ** Run ESLint on save
     */

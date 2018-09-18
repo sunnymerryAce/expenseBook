@@ -30,7 +30,8 @@ export default {
      * 登録日
      */
     registerDate() {
-      return `${this.item.year}/${this.item.month}/${this.item.date}`;
+      return `${this.item.date.getFullYear()}/${this.item.date.getMonth() +
+        1}/${this.item.date.getDate()}`;
     },
     /**
      * カテゴリ名
@@ -39,13 +40,13 @@ export default {
       return this.$store.getters.categoryName(this.item.category);
     }
   },
-  created() {},
+  created() {
+    console.log(this.id);
+  },
   methods: {
     editItem() {
       EventBus.$emit('editItem', {
         id: this.id,
-        year: this.item.year,
-        month: this.item.month,
         date: this.item.date,
         title: this.item.title,
         category: this.item.category,

@@ -17,6 +17,8 @@
 
 <script>
 import firebase from '@/plugins/firebase';
+import ls from 'localstorage-ttl';
+
 import Chart from 'chart.js';
 import Navigation from '~/components/Navigation.vue';
 import ListItem from '~/components/ListItem.vue';
@@ -36,7 +38,16 @@ export default {
   },
   computed: {
     list() {
-      return this.$store.state.list;
+      return this.$store.state.items;
+    }
+  },
+  created() {
+    if (ls.get('userId')) {
+      // ユーザ情報を格納
+      this.$store.dispatch('initDatabase', ls.get('userId'));
+    } else {
+      // ログイン画面を表示
+      this.$router.push('/login');
     }
   },
   updated() {},

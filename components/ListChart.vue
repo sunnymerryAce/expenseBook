@@ -45,19 +45,8 @@ export default {
       isLoading: false
     };
   },
-  created() {
-    // 初回のDBロード完了を検知
-    EventBus.$on('DBLoaded', this.readyChart);
-  },
-  mounted() {
-    if (!navigator.onLine) {
-      console.log('offline');
-      // オフライン状態の場合、localstorageの情報を表示
-      this.readyChart();
-    } else {
-      console.log('online');
-    }
-  },
+  created() {},
+  mounted() {},
   computed: {
     items() {
       return this.$store.state.items;
@@ -73,7 +62,7 @@ export default {
     // EventBus.$off('DBLoaded', this.readyChart);
   },
   watch: {
-    // 初回ロード以降の変更をこちらで検知
+    // データの変更を検知してグラフを更新
     items() {
       this.readyChart();
     }
@@ -102,13 +91,15 @@ export default {
         }
         // 各カテゴリの合計金額を計算
         if (this.$store.state.items) {
-          this.$store.state.items.forEach((item) => {
+          for (let key of Object.keys(this.$store.state.items)) {
             // 合計金額に0円を設定
-            if (!this.amountList[item.category]) {
-              this.amountList[item.category] = 0;
+            if (!this.amountList[this.$store.state.items[key].category]) {
+              this.amountList[this.$store.state.items[key].category] = 0;
             }
-            this.amountList[item.category] += item.amount;
-          });
+            this.amountList[
+              this.$store.state.items[key].category
+            ] += this.$store.state.items[key].amount;
+          }
         }
         // 赤字のカテゴリに赤色を指定
         this.amountList.forEach((amount, index) => {

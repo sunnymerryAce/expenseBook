@@ -80,9 +80,11 @@ export default {
     }
   },
   created() {
+    console.log('modal created');
+
     EventBus.$on('editItem', (params) => {
       this.id = params.id;
-      this.date = new Date(params.year, params.month - 1, params.date);
+      this.date = params.date;
       this.initializeCalendar();
       this.title = params.title;
       this.category = params.category;
@@ -109,6 +111,7 @@ export default {
      * カレンダーを初期化する
      */
     initializeCalendar() {
+      console.log(this.date);
       // Materialize.css のモジュール有効化
       this.materializeDatePicker = M.Datepicker.init(
         document.querySelectorAll('.datepicker'),
@@ -140,9 +143,7 @@ export default {
         this.$store.state.itemsRef
           .doc(docId)
           .set(item)
-          .then(() => {
-            console.log('setItem');
-          });
+          .then(() => {});
       } else {
         return;
       }

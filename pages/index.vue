@@ -50,16 +50,6 @@ export default {
     EventBus.$on('DBLoaded', () => {
       this.isLoading = false;
     });
-    // 情報をRDBから取得
-    this.$store.dispatch('getDatabase');
-    // DBのオンライン状態を確認
-    const connectedRef = firebase.database().ref('.info/connected');
-    connectedRef.once('value', (snap) => {
-      if (!snap.val()) {
-        // オフライン状態の場合、localstorageの情報を表示
-        this.isLoading = false;
-      }
-    });
   },
   methods: {
     logout() {
@@ -67,11 +57,7 @@ export default {
         .auth()
         .signOut()
         .then(() => {
-          this.$store.commit('setUserId', {
-            userId: null
-          });
           localStorage.removeItem('userId');
-          alert('ログアウトしました');
           location.href = '/login';
         })
         .catch((err) => {

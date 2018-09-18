@@ -15,12 +15,7 @@ export default {
        */
       loading: true
     };
-  },
-  created() {
-    EventBus.$on('DBLoaded', () => {});
-  },
-  monuted() {},
-  methods: {}
+  }
 };
 </script>
 <style>
