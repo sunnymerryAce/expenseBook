@@ -29,14 +29,12 @@ module.exports = {
   router: {
     middleware: 'authentication'
   },
-  plugins: [
-    // { src: "~plugins/persistedstate.js", ssr: false },
-  ],
+  plugins: [{ src: '~plugins/vue-touch.js', ssr: false }],
   /*
   ** Build configuration
   */
   build: {
-    vendor: ['localstorage-ttl', 'jquery', 'materialize-css'],
+    vendor: ['localstorage-ttl', 'jquery', 'materialize-css', 'gsap/TweenMax'],
     styleResources: {
       scss: './assets/scss/common.scss',
       options: {}

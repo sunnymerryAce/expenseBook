@@ -31,7 +31,15 @@ const store = () =>
       /**
        * データベースのカテゴリ/予算一覧
        */
-      categoryList: []
+      categoryList: [],
+      /**
+       * カテゴリ/予算コレクションの参照
+       */
+      budgetListRef: null,
+      /**
+       * データベースのカテゴリ/予算一覧
+       */
+      budgetList: []
     },
     mutations: {
       setUserId(state, userId) {
@@ -48,6 +56,9 @@ const store = () =>
       },
       setCategoryList(state, categoryList) {
         state.categoryList = categoryList;
+      },
+      setBudgetList(state, budgetList) {
+        state.budgetList = budgetList;
       }
     },
     getters: {
@@ -79,6 +90,10 @@ const store = () =>
           'setCategoryListRef',
           state.db.doc(`users/${state.userId}`).collection('category')
         );
+        commit(
+          'setCategoryListRef',
+          state.db.doc(`users/${state.userId}`).collection('budget')
+        );
         dispatch('getDatabase');
       },
       /**
@@ -93,6 +108,17 @@ const store = () =>
               categoryList.push(doc.data());
             });
             commit('setCategoryList', categoryList);
+            resolve();
+          });
+        });
+        // 予算
+        const promise3 = new Promise((resolve) => {
+          state.categoryListRef.onSnapshot((querySnapshot) => {
+            const budgetList = [];
+            querySnapshot.forEach((doc) => {
+              budgetList.push(doc.data());
+            });
+            commit('setBudgetList', budgetList);
             resolve();
           });
         });

@@ -1,25 +1,31 @@
 <template lang="pug">
-  section.setting
+  section.monthl-budget
     Navigation
+    a.waves-effect.waves-light.btn.add-button ADD NEW BUDGET
     ul.collection
-      v-touch.collection-item.setting__item(tag='li' @tap="$router.push('/setting/budget')") Monthly Budget
-      li.collection-item.setting__item First Day of Month
+      MonthlyBudgetItem.collection-item.setting__item(
+        v-for='month in months',
+        tag='li')
+        
 </template>
 
 <script>
 import firebase from '@/plugins/firebase';
 import ls from 'localstorage-ttl';
 
+import EventBus from '~/assets/js/EventBus.js';
 import Navigation from '~/components/Navigation.vue';
 import Loading from '~/components/Loading.vue';
-import EventBus from '~/assets/js/EventBus.js';
+import MonthlyBudgetItem from '~/components/MonthlyBudgetItem.vue';
 
 export default {
-  name: 'Setting',
+  name: 'budget',
   components: {
     Navigation,
-    Loading
+    Loading,
+    MonthlyBudgetItem
   },
+  props: {},
   data() {
     return {
       /**
@@ -28,7 +34,14 @@ export default {
       isLoaded: false
     };
   },
-  computed: {},
+  computed: {
+    /**
+     * 月別予算の配列
+     */
+    months() {
+      return this.$store.state.budgetList;
+    }
+  },
   created() {},
   mounted() {},
   methods: {}
@@ -49,6 +62,11 @@ export default {
     border-right: 2px solid #d7d7d7;
     transform: rotate(45deg);
   }
+}
+.add-button {
+  @extend .light-blue;
+  @extend .darken-4;
+  margin: 0 auto;
 }
 </style>
 
