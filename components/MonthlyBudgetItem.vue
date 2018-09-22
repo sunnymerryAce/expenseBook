@@ -3,7 +3,7 @@
     .monthly-item__label 201809
     .monthly-item__category__wrapper(ref='monthWrapper')
       ul.collection.monthly-item__category(ref='month')
-        v-touch.collection-item.setting__item(tag='li') Mss
+        v-touch.collection-item.setting__item(tag='li') {{category}}
 </template>
 
 <script>
@@ -15,7 +15,9 @@ import EventBus from '~/assets/js/EventBus.js';
 export default {
   name: 'MonthlyBudgetItem',
   components: {},
-  props: {},
+  props: {
+    category: {}
+  },
   data() {
     return {
       /**
@@ -36,18 +38,23 @@ export default {
       return this.$store.state.budgetList;
     }
   },
-  created() {},
+  created() {
+    console.log(this.category);
+  },
   mounted() {},
   methods: {
     /**
-     * プルダウン表示
+     * アコーディオン表示
      */
-    toggleDetail(index) {
+    toggleDetail() {
       if (!this.showCategory) {
         const contentHeight = getComputedStyle(this.$refs.month).height;
         TweenMax.to(this.$refs.monthWrapper, 0.2, {
           height: contentHeight,
-          ease: Power2.easeOut
+          ease: Power2.easeOut,
+          onComplete: () => {
+            console.log('complete');
+          }
         });
       } else {
         TweenMax.to(this.$refs.monthWrapper, 0.2, {
@@ -73,7 +80,7 @@ export default {
     height: 13px;
     border-top: 2px solid #d7d7d7;
     border-right: 2px solid #d7d7d7;
-    transform: rotate(45deg);
+    transform: rotate(135deg);
   }
 }
 .add-button {

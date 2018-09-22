@@ -4,8 +4,9 @@
     a.waves-effect.waves-light.btn.add-button ADD NEW BUDGET
     ul.collection
       MonthlyBudgetItem.collection-item.setting__item(
+        tag='li',
         v-for='month in months',
-        tag='li')
+        :category='month')
         
 </template>
 

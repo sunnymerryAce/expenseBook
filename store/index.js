@@ -3,6 +3,7 @@ import firebase from '@/plugins/firebase';
 import 'firebase/firestore';
 
 import EventBus from '~/assets/js/EventBus.js';
+import { getYYYYMM } from '~/assets/js/common.js';
 
 const store = () =>
   new Vuex.Store({
@@ -11,6 +12,14 @@ const store = () =>
        * ユーザID
        */
       userId: '',
+      /**
+       * 表示する月 (Dateオブジェクト)
+       */
+      currentMonth: Date,
+      /**
+       * 月始まりの日にち
+       */
+      startMonthDate: 25,
       /**
        * Firestoreの参照
        */
@@ -25,25 +34,28 @@ const store = () =>
        */
       items: {},
       /**
-       * カテゴリ/予算コレクションの参照
+       * カテゴリコレクションの参照
        */
       categoryListRef: null,
       /**
-       * データベースのカテゴリ/予算一覧
+       * カテゴリ一覧
        */
       categoryList: [],
       /**
-       * カテゴリ/予算コレクションの参照
+       * 予算コレクションの参照
        */
       budgetListRef: null,
       /**
-       * データベースのカテゴリ/予算一覧
+       * 月ごとのカテゴリ/予算一覧
        */
       budgetList: []
     },
     mutations: {
       setUserId(state, userId) {
         state.userId = userId;
+      },
+      setCurrentMonth(state, currentMonth) {
+        state.currentMonth = currentMonth;
       },
       setItemsRef(state, itemsRef) {
         state.itemsRef = itemsRef;
@@ -56,6 +68,9 @@ const store = () =>
       },
       setCategoryList(state, categoryList) {
         state.categoryList = categoryList;
+      },
+      setBudgetListRef(state, budgetListRef) {
+        state.budgetListRef = budgetListRef;
       },
       setBudgetList(state, budgetList) {
         state.budgetList = budgetList;
@@ -91,7 +106,7 @@ const store = () =>
           state.db.doc(`users/${state.userId}`).collection('category')
         );
         commit(
-          'setCategoryListRef',
+          'setBudgetListRef',
           state.db.doc(`users/${state.userId}`).collection('budget')
         );
         dispatch('getDatabase');
@@ -113,17 +128,38 @@ const store = () =>
         });
         // 予算
         const promise3 = new Promise((resolve) => {
-          state.categoryListRef.onSnapshot((querySnapshot) => {
-            const budgetList = [];
-            querySnapshot.forEach((doc) => {
-              budgetList.push(doc.data());
+          const YYYYMM = getYYYYMM(state.currentMonth);
+          state.budgetListRef
+            // 当月の予算1件検索
+            .where(firebase.firestore.FieldPath.documentId(), '==', YYYYMM)
+            .onSnapshot((querySnapshot) => {
+              querySnapshot.forEach((doc) => {
+                commit('setBudgetList', doc.data().list);
+              });
+              console.log(state.budgetList);
+              resolve();
             });
-            commit('setBudgetList', budgetList);
-            resolve();
-          });
         });
         // 支出項目
         const promise2 = new Promise((resolve) => {
+          // 検索期間を設定
+          // 開始日
+          const from = new Date(state.currentMonth);
+          from.setDate(state.startMonthDate);
+          if (state.currentMonth.getDate() < state.startMonthDate) {
+            // 設定開始日以前のとき、前月を設定
+            from.setMonth(state.currentMonth.getMonth() - 1);
+          }
+          console.log(from);
+          // 終了日
+          const to = new Date(state.currentMonth);
+          to.setDate(state.startMonthDate - 1);
+          if (state.currentMonth.getDate() >= state.startMonthDate) {
+            // 設定開始日以降のとき、来月を設定
+            to.setMonth(state.currentMonth.getMonth() + 1);
+          }
+          console.log(to);
+
           state.itemsRef.onSnapshot((querySnapshot) => {
             const items = {};
             querySnapshot.forEach((doc) => {
@@ -133,7 +169,7 @@ const store = () =>
             resolve();
           });
         });
-        Promise.all([promise1, promise2]).then(() => {
+        Promise.all([promise1, promise2, promise3]).then(() => {
           EventBus.$emit('DBLoaded');
         });
       }

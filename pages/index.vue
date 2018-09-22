@@ -40,6 +40,13 @@ export default {
   },
   created() {
     if (ls.get('userId')) {
+      // 日時を取得し当月を設定する
+      let now = new Date();
+      now.setHours(0);
+      now.setMinutes(0);
+      now.setSeconds(0);
+      now.setMilliseconds(0);
+      this.$store.commit('setCurrentMonth', now);
       // ユーザ情報を格納
       this.$store.dispatch('initDatabase', ls.get('userId'));
     } else {
