@@ -52,10 +52,10 @@ export default {
       return this.$store.state.items;
     },
     budgetList() {
-      return this.$store.state.categoryList.map((category) => category.budget);
+      return this.$store.state.budgetList.map((category) => category.budget);
     },
     categoryLabels() {
-      return this.$store.state.categoryList.map((category) => category.title);
+      return this.$store.state.budgetList.map((category) => category.title);
     }
   },
   destroyed() {
@@ -91,8 +91,14 @@ export default {
         }
         // 各カテゴリの合計金額を計算
         if (this.$store.state.items) {
+          // amountListを初期化(0円を設定)
+          if (this.amountList.length) {
+            this.amountList.forEach((amount) => {
+              amount = 0;
+            });
+          }
           for (let key of Object.keys(this.$store.state.items)) {
-            // 合計金額に0円を設定
+            // 未設定の場合、合計金額に0円を設定
             if (!this.amountList[this.$store.state.items[key].category]) {
               this.amountList[this.$store.state.items[key].category] = 0;
             }

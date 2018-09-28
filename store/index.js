@@ -128,7 +128,9 @@ const store = () =>
         });
         // 予算
         const promise3 = new Promise((resolve) => {
-          const YYYYMM = getYYYYMM(state.currentMonth);
+          const YYYYMM = getYYYYMM(state.currentMonth, state.startMonthDate);
+          console.log(YYYYMM);
+
           state.budgetListRef
             // 当月の予算1件検索
             .where(firebase.firestore.FieldPath.documentId(), '==', YYYYMM)
@@ -160,14 +162,19 @@ const store = () =>
           }
           console.log(to);
 
-          state.itemsRef.onSnapshot((querySnapshot) => {
-            const items = {};
-            querySnapshot.forEach((doc) => {
-              items[doc.id] = doc.data();
+          // from/toで絞り込み
+          state.itemsRef
+            .where('date', '>=', from)
+            .where('date', '<', to)
+            .onSnapshot((querySnapshot) => {
+              const items = {};
+              querySnapshot.forEach((doc) => {
+                items[doc.id] = doc.data();
+              });
+              console.log(items);
+              commit('setItems', items);
+              resolve();
             });
-            commit('setItems', items);
-            resolve();
-          });
         });
         Promise.all([promise1, promise2, promise3]).then(() => {
           EventBus.$emit('DBLoaded');
