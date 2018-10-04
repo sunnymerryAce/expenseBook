@@ -45,8 +45,9 @@ export default {
       isLoading: false
     };
   },
-  created() {},
-  mounted() {},
+  created() {
+    this.readyChart();
+  },
   computed: {
     items() {
       return this.$store.state.items;
@@ -94,6 +95,7 @@ export default {
           // amountListを初期化(0円を設定)
           if (this.amountList.length) {
             this.amountList.forEach((amount) => {
+              console.log('０設定');
               amount = 0;
             });
           }
@@ -124,7 +126,6 @@ export default {
      */
     drawChart() {
       console.log('draw');
-
       // グラフの描画
       if (!this.$refs.myChart) return;
       const ctx = this.$refs.myChart.getContext('2d');

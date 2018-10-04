@@ -44,7 +44,9 @@ export default {
   created() {
     if (ls.get('userId')) {
       // ユーザ情報を格納
-      this.$store.dispatch('initDatabase', ls.get('userId'));
+      if (!this.$store.state.userId) {
+        this.$store.dispatch('initDatabase', ls.get('userId'));
+      }
     } else {
       // ログイン画面を表示
       this.$router.push('/login');

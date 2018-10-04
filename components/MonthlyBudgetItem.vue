@@ -3,7 +3,7 @@
     .monthly-item__label 201809
     .monthly-item__category__wrapper(ref='monthWrapper')
       ul.collection.monthly-item__category(ref='month')
-        v-touch.collection-item.setting__item(tag='li') {{category}}
+        v-touch.collection-item.setting__item(tag='li') {{budget.title}}
 </template>
 
 <script>
@@ -16,7 +16,7 @@ export default {
   name: 'MonthlyBudgetItem',
   components: {},
   props: {
-    category: {}
+    budget: {}
   },
   data() {
     return {

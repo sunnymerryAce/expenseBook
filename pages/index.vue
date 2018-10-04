@@ -48,7 +48,11 @@ export default {
       now.setMilliseconds(0);
       this.$store.commit('setCurrentMonth', now);
       // ユーザ情報を格納
-      this.$store.dispatch('initDatabase', ls.get('userId'));
+      if (!this.$store.state.userId) {
+        this.$store.dispatch('initDatabase', ls.get('userId'));
+      } else {
+        this.isLoading = false;
+      }
     } else {
       // ログイン画面を表示
       this.$router.push('/login');

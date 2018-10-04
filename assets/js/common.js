@@ -1,12 +1,3 @@
-// export const getYYYYMM = (date) => {
-//   const year = date.getFullYear(),
-//     month =
-//       date.getMonth() + 1 < 10
-//         ? `0${date.getMonth() + 1}`
-//         : `${date.getMonth() + 1}`;
-//   return `${year}${month}`;
-// };
-
 /**
  * 日付と設定開始日から当月(YYYYMM)を取得する
  * ex. 25日が設定開始日の場合

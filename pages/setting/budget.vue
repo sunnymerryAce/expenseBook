@@ -1,13 +1,16 @@
 <template lang="pug">
   section.monthl-budget
     Navigation
-    a.waves-effect.waves-light.btn.add-button ADD NEW BUDGET
+    BudgetModal(:categoryId='categoryId')
+    a.waves-effect.waves-light.btn.add-button.modal-trigger(
+      data-target="budgetModal",
+      @click="registerBudget(-1)") ADD NEW BUDGET
     ul.collection
-      MonthlyBudgetItem.collection-item.setting__item(
-        tag='li',
-        v-for='month in months',
-        :category='month')
-        
+      li.collection-item.setting__item.modal-trigger(
+        v-for='budget, index in budgets',
+        :budget='budget',
+        data-target="budgetModal",
+        @click="registerBudget(index)") {{$store.getters.categoryName(index)}} {{budget.amount}}
 </template>
 
 <script>
@@ -16,6 +19,7 @@ import ls from 'localstorage-ttl';
 
 import EventBus from '~/assets/js/EventBus.js';
 import Navigation from '~/components/Navigation.vue';
+import BudgetModal from '~/components/BudgetModal.vue';
 import Loading from '~/components/Loading.vue';
 import MonthlyBudgetItem from '~/components/MonthlyBudgetItem.vue';
 
@@ -24,28 +28,37 @@ export default {
   components: {
     Navigation,
     Loading,
-    MonthlyBudgetItem
+    MonthlyBudgetItem,
+    BudgetModal
   },
-  props: {},
   data() {
     return {
       /**
        * ロード中かどうか
        */
-      isLoaded: false
+      isLoaded: false,
+      /**
+       * カテゴリ編集モーダルに渡すID
+       */
+      categoryId: -1
     };
   },
   computed: {
     /**
-     * 月別予算の配列
+     * 予算の配列
      */
-    months() {
+    budgets() {
       return this.$store.state.budgetList;
     }
   },
   created() {},
   mounted() {},
-  methods: {}
+  methods: {
+    registerBudget(id) {
+      console.log(id);
+      this.categoryId = id;
+    }
+  }
 };
 </script>
 <style scoped lang="scss">

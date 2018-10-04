@@ -38,7 +38,7 @@ const store = () =>
        */
       categoryListRef: null,
       /**
-       * カテゴリ一覧
+       * デフォルトのカテゴリ一覧
        */
       categoryList: [],
       /**
@@ -88,7 +88,16 @@ const store = () =>
        * カテゴリ名
        */
       categoryName: (state) => (id) => {
-        return state.categoryList.length ? state.categoryList[id].title : '';
+        console.log(state.budgetList);
+        return id >= 0 && state.budgetList.length
+          ? state.budgetList[id].title
+          : '';
+      },
+      /**
+       * 現在の年月(YYYYMM)
+       */
+      currentYYYYMM(state) {
+        return getYYYYMM(state.currentMonth, state.startMonthDate);
       }
     },
     actions: {
@@ -115,6 +124,7 @@ const store = () =>
        * データベースからデータを取得する
        */
       getDatabase({ commit, state }) {
+        console.log('getDatabase');
         // カテゴリ
         const promise1 = new Promise((resolve) => {
           state.categoryListRef.onSnapshot((querySnapshot) => {
@@ -129,8 +139,6 @@ const store = () =>
         // 予算
         const promise3 = new Promise((resolve) => {
           const YYYYMM = getYYYYMM(state.currentMonth, state.startMonthDate);
-          console.log(YYYYMM);
-
           state.budgetListRef
             // 当月の予算1件検索
             .where(firebase.firestore.FieldPath.documentId(), '==', YYYYMM)
