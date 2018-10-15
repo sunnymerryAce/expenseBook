@@ -53,7 +53,7 @@ export default {
       return this.$store.state.items;
     },
     budgetList() {
-      return this.$store.state.budgetList.map((category) => category.budget);
+      return this.$store.state.budgetList.map((category) => category.amount);
     },
     categoryLabels() {
       return this.$store.state.budgetList.map((category) => category.title);

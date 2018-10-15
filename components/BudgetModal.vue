@@ -34,10 +34,6 @@ export default {
   data() {
     return {
       /**
-       * ID
-       */
-      id: null,
-      /**
        * カテゴリ名
        */
       title: '',
@@ -78,7 +74,7 @@ export default {
      * 編集かどうか
      */
     isFixing() {
-      return this.id ? true : false;
+      return this.categoryId > -1 ? true : false;
     }
   },
   watch: {
@@ -119,7 +115,7 @@ export default {
           });
           // 編集
         } else {
-          newList.splice(this.categoryId, 0, {
+          newList.splice(this.categoryId, 1, {
             amount: this.amount,
             title: this.title
           });
@@ -138,7 +134,13 @@ export default {
      * 削除ボタン押下時の処理
      */
     deleteItem() {
-      this.$store.state.itemsRef.doc(this.id).delete();
+      const newList = [...this.budgetList];
+      newList.splice(this.categoryId, 1);
+      this.$store.state.budgetListRef
+        .doc(this.$store.getters.currentYYYYMM)
+        .update({
+          list: newList
+        });
     }
   }
 };

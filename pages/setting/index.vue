@@ -4,6 +4,7 @@
     ul.collection
       v-touch.collection-item.setting__item(tag='li' @tap="$router.push('/setting/budget')") Monthly Budget
       li.collection-item.setting__item First Day of Month
+    button.waves-effect.waves-light.btn.logout-button.light-blue.darken-3(@click='logout') Logout
 </template>
 
 <script>
@@ -31,7 +32,20 @@ export default {
   computed: {},
   created() {},
   mounted() {},
-  methods: {}
+  methods: {
+    logout() {
+      firebase
+        .auth()
+        .signOut()
+        .then(() => {
+          localStorage.removeItem('userId');
+          location.href = '/login';
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }
 };
 </script>
 <style scoped lang="scss">
@@ -49,6 +63,9 @@ export default {
     border-right: 2px solid #d7d7d7;
     transform: rotate(45deg);
   }
+}
+.logout-button {
+  margin-top: 20px;
 }
 </style>
 

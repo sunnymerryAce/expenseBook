@@ -88,7 +88,6 @@ const store = () =>
        * カテゴリ名
        */
       categoryName: (state) => (id) => {
-        console.log(state.budgetList);
         return id >= 0 && state.budgetList.length
           ? state.budgetList[id].title
           : '';
@@ -146,7 +145,6 @@ const store = () =>
               querySnapshot.forEach((doc) => {
                 commit('setBudgetList', doc.data().list);
               });
-              console.log(state.budgetList);
               resolve();
             });
         });
