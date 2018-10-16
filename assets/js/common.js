@@ -19,3 +19,15 @@ export const getYYYYMM = (today, startMonthDate) => {
       : `${dummy.getMonth() + 1}`;
   return `${today.getFullYear()}${month}`;
 };
+
+/**
+ * 現在日時を取得し、年月日のみのDateオブジェクトを取得する
+ */
+export const getDateOfThisMonth = () => {
+  const now = new Date();
+  now.setHours(0);
+  now.setMinutes(0);
+  now.setSeconds(0);
+  now.setMilliseconds(0);
+  return now;
+};

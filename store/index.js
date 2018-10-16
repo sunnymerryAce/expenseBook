@@ -88,7 +88,7 @@ const store = () =>
        * カテゴリ名
        */
       categoryName: (state) => (id) => {
-        return id >= 0 && state.budgetList.length
+        return state.budgetList.length && state.budgetList[id]
           ? state.budgetList[id].title
           : '';
       },
@@ -123,7 +123,6 @@ const store = () =>
        * データベースからデータを取得する
        */
       getDatabase({ commit, state }) {
-        console.log('getDatabase');
         // カテゴリ
         const promise1 = new Promise((resolve) => {
           state.categoryListRef.onSnapshot((querySnapshot) => {
@@ -158,7 +157,6 @@ const store = () =>
             // 設定開始日以前のとき、前月を設定
             from.setMonth(state.currentMonth.getMonth() - 1);
           }
-          console.log(from);
           // 終了日
           const to = new Date(state.currentMonth);
           to.setDate(state.startMonthDate - 1);
@@ -166,7 +164,6 @@ const store = () =>
             // 設定開始日以降のとき、来月を設定
             to.setMonth(state.currentMonth.getMonth() + 1);
           }
-          console.log(to);
 
           // from/toで絞り込み
           state.itemsRef
@@ -177,7 +174,6 @@ const store = () =>
               querySnapshot.forEach((doc) => {
                 items[doc.id] = doc.data();
               });
-              console.log(items);
               commit('setItems', items);
               resolve();
             });

@@ -41,7 +41,6 @@ export default {
     }
   },
   created() {
-    console.log(this.id);
   },
   methods: {
     editItem() {

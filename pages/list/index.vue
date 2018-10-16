@@ -12,6 +12,7 @@
             th Title
         tbody
           ListItem(v-for='item, key in list', :item='item', :id='key', index='index')
+    Pagination
     RegisterButton
 </template>
 
@@ -24,6 +25,8 @@ import Navigation from '~/components/Navigation.vue';
 import ListItem from '~/components/ListItem.vue';
 import RegisterModal from '~/components/RegisterModal.vue';
 import RegisterButton from '~/components/RegisterButton.vue';
+import Pagination from '~/components/Pagination.vue';
+import { getDateOfThisMonth } from '~/assets/js/common.js';
 
 export default {
   name: 'List',
@@ -31,7 +34,8 @@ export default {
     Navigation,
     ListItem,
     RegisterModal,
-    RegisterButton
+    RegisterButton,
+    Pagination
   },
   data() {
     return {};
@@ -43,6 +47,9 @@ export default {
   },
   created() {
     if (ls.get('userId')) {
+      // 日時を取得し当月を設定する
+      this.$store.commit('setCurrentMonth', getDateOfThisMonth());
+
       // ユーザ情報を格納
       if (!this.$store.state.userId) {
         this.$store.dispatch('initDatabase', ls.get('userId'));
@@ -61,7 +68,7 @@ export default {
   text-align: center;
 }
 .list__content {
-  margin-bottom: 100px;
+  margin-bottom: 30px;
 }
 </style>
 

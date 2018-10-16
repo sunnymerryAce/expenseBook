@@ -14,14 +14,6 @@ export default {
   data() {
     return {
       /**
-       * 登録先データベース
-       */
-      db: null,
-      /**
-       * データベースのカテゴリ一覧
-       */
-      categoryList: [],
-      /**
        * 金額
        */
       amount: '0',
@@ -29,10 +21,6 @@ export default {
        * ジャンル
        */
       category: null,
-      /**
-       * タイトル
-       */
-      title: '',
       /**
        * 各カテゴリの金額合計
        */
@@ -94,16 +82,16 @@ export default {
         if (this.$store.state.items) {
           // amountListを初期化(0円を設定)
           if (this.amountList.length) {
-            this.amountList.forEach((amount) => {
-              console.log('０設定');
-              amount = 0;
+            this.amountList.forEach((amount, index) => {
+              this.amountList[index] = 0;
             });
           }
           for (let key of Object.keys(this.$store.state.items)) {
-            // 未設定の場合、合計金額に0円を設定
+            // カテゴリが未設定の場合、合計金額に0円を設定
             if (!this.amountList[this.$store.state.items[key].category]) {
               this.amountList[this.$store.state.items[key].category] = 0;
             }
+            // アイテム金額を加算
             this.amountList[
               this.$store.state.items[key].category
             ] += this.$store.state.items[key].amount;
@@ -125,7 +113,6 @@ export default {
      * グラフを描画する
      */
     drawChart() {
-      console.log('draw');
       // グラフの描画
       if (!this.$refs.myChart) return;
       const ctx = this.$refs.myChart.getContext('2d');
