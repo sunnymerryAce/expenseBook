@@ -96,6 +96,7 @@ const store = () =>
        * 現在の年月(YYYYMM)
        */
       currentYYYYMM(state) {
+        console.log(state.currentMonth);
         return getYYYYMM(state.currentMonth, state.startMonthDate);
       }
     },
@@ -129,6 +130,7 @@ const store = () =>
             const categoryList = [];
             querySnapshot.forEach((doc) => {
               categoryList.push(doc.data());
+              console.log(doc.data());
             });
             commit('setCategoryList', categoryList);
             resolve();
@@ -137,6 +139,7 @@ const store = () =>
         // 予算
         const promise3 = new Promise((resolve) => {
           const YYYYMM = getYYYYMM(state.currentMonth, state.startMonthDate);
+
           state.budgetListRef
             // 当月の予算1件検索
             .where(firebase.firestore.FieldPath.documentId(), '==', YYYYMM)

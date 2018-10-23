@@ -71,7 +71,6 @@ export default {
     // 表示する月を変更する
     changeMonth(direction) {
       this.now.setMonth(this.now.getMonth() + direction);
-      console.log(this.now);
       this.$store.commit('setCurrentMonth', this.now);
       this.$store.dispatch('getDatabase');
     }

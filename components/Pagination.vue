@@ -34,6 +34,10 @@ export default {
 
 <style scoped lang="scss">
 .pagination {
+  @extend .light-blue;
+  @extend .lighten-4;
+  position: fixed;
+  bottom: 0;
   display: flex;
   justify-content: center;
   align-items: center;
